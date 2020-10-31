@@ -1,7 +1,10 @@
 import moderngl
 import numpy as np
 from PIL import Image
+import pyrr
 
+import glob
+import math
 import os
 import subprocess
 
@@ -19,11 +22,18 @@ class Scene:
         self.prog = self.ctx.program(vertex_shader=vert, fragment_shader=frag)
         self.verts = []
         self.frame_no = 1
+        self.set_perspective()
 
-    def add_vertex(self, x, y, r, g, b):
-        self.verts.append([x, y, r, g, b])
+    def set_perspective(self, fovy=90, aspect=None, near=1, far=1000):
+        if aspect == None: aspect = self.width / self.height
+        perspective = pyrr.matrix44.create_perspective_projection(fovy, aspect, near, far)
+        self.prog['u_proj'].write(perspective.astype('f4'))
+
+    def add_vertex(self, x, y, z, r, g, b):
+        self.verts.append([x, y, z, r, g, b])
 
     def frame(self):
+        self.fbo.clear()
         va = self.ctx.simple_vertex_array(
             self.prog,
             self.ctx.buffer(np.array(self.verts, dtype='f4')),
@@ -39,4 +49,7 @@ class Scene:
         self.verts.clear()
 
     def animate(self, framerate=30):
-        subprocess.run(f'ffmpeg -framerate {framerate} -i frame-%06d.png output.mkv'.split())
+        file_name = 'animation.mkv'
+        if os.path.exists(file_name): os.remove(file_name)
+        subprocess.run(f'ffmpeg -framerate {framerate} -i frame-%06d.png {file_name}'.split())
+        for i in glob.glob('frame-*.png'): os.remove(i)
