@@ -3,6 +3,7 @@ import numpy as np
 from PIL import Image
 
 import os
+import subprocess
 
 DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -17,11 +18,12 @@ class Scene:
         with open(os.path.join(DIR, 'frag.glsl')) as f: frag = f.read()
         self.prog = self.ctx.program(vertex_shader=vert, fragment_shader=frag)
         self.verts = []
+        self.frame_no = 1
 
     def add_vertex(self, x, y, r, g, b):
         self.verts.append([x, y, r, g, b])
 
-    def render(self, file_name='frame.png'):
+    def frame(self):
         va = self.ctx.simple_vertex_array(
             self.prog,
             self.ctx.buffer(np.array(self.verts, dtype='f4')),
@@ -31,4 +33,10 @@ class Scene:
         va.render(mode=moderngl.TRIANGLES)
         image = Image.frombytes('RGBA', (self.width, self.height), self.fbo.read(components=4))
         image = image.transpose(Image.FLIP_TOP_BOTTOM)
-        image.save(file_name)
+        image.save(f'frame-{self.frame_no:06}.png')
+        print('completed frame', self.frame_no)
+        self.frame_no += 1
+        self.verts.clear()
+
+    def animate(self, framerate=30):
+        subprocess.run(f'ffmpeg -framerate {framerate} -i frame-%06d.png output.mkv'.split())
