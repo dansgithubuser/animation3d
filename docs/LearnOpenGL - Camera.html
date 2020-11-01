@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<!-- saved from url=(0046)https://learnopengl.com/Getting-started/Camera -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>LearnOpenGL - Camera</title>	<!--<title>Learn OpenGL, extensive tutorial resource for learning Modern OpenGL</title>-->
+    <link rel="shortcut icon" type="image/ico" href="https://learnopengl.com/favicon.ico">
+    <meta name="description" content="Learn OpenGL . com provides good and clear modern 3.3+ OpenGL tutorials with clear examples. A great resource to learn modern OpenGL aimed at beginners.">
+	<meta name="fragment" content="!">
+    <script async="" src="./LearnOpenGL - Camera_files/analytics.js"></script><script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-51879160-1', 'learnopengl.com');
+      ga('send', 'pageview');
+
+    </script>
+    <!--<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-7855791439695850",
+              enable_page_level_ads: true
+         });
+    </script>
+	<script async="async" src="./LearnOpenGL - Camera_files/gpt.js"></script>
+	<script>
+	  var googletag = googletag || {};
+	  googletag.cmd = googletag.cmd || [];
+	</script>
+	<script>
+	  googletag.cmd.push(function() {
+		googletag.defineSlot('/8491498/learnopengl_video', [300, 225], 'div-gpt-ad-1540574378241-0').addService(googletag.pubads());
+		googletag.pubads().enableSingleRequest();
+		googletag.pubads().collapseEmptyDivs();
+		googletag.enableServices();
+	  });
+	</script>
+    <script type="text/javascript" src="./LearnOpenGL - Camera_files/1681.js"></script>
+	<script src="./LearnOpenGL - Camera_files/jquery-1.11.0.min.js"></script><script data-dapp-detection="">
+(function() {
+  let alreadyInsertedMetaTag = false
+
+  function __insertDappDetected() {
+    if (!alreadyInsertedMetaTag) {
+      const meta = document.createElement('meta')
+      meta.name = 'dapp-detected'
+      document.head.appendChild(meta)
+      alreadyInsertedMetaTag = true
+    }
+  }
+
+  if (window.hasOwnProperty('web3')) {
+    // Note a closure can't be used for this var because some sites like
+    // www.wnyc.org do a second script execution via eval for some reason.
+    window.__disableDappDetectionInsertion = true
+    // Likely oldWeb3 is undefined and it has a property only because
+    // we defined it. Some sites like wnyc.org are evaling all scripts
+    // that exist again, so this is protection against multiple calls.
+    if (window.web3 === undefined) {
+      return
+    }
+    __insertDappDetected()
+  } else {
+    var oldWeb3 = window.web3
+    Object.defineProperty(window, 'web3', {
+      configurable: true,
+      set: function (val) {
+        if (!window.__disableDappDetectionInsertion)
+          __insertDappDetected()
+        oldWeb3 = val
+      },
+      get: function () {
+        if (!window.__disableDappDetectionInsertion)
+          __insertDappDetected()
+        return oldWeb3
+      }
+    })
+  }
+})()</script>
+	<script src="./LearnOpenGL - Camera_files/hoverintent.js"></script>
+	<link rel="stylesheet" type="text/css" href="./LearnOpenGL - Camera_files/layout.css">
+    <link rel="stylesheet" type="text/css" href="./LearnOpenGL - Camera_files/obsidian.css">
+    <script src="./LearnOpenGL - Camera_files/highlight.pack.js"></script>    
+    <script src="./LearnOpenGL - Camera_files/functions.js"></script>
+    <script type="text/javascript" src="./LearnOpenGL - Camera_files/MathJax.js"></script>
+    <script>
+    // Has to be loaded last due to content bug 
+    MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+    </script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script>  
+        $(document).ready(function() {
+            // check if user visited from the old # based urls, re-direct to ?p= form
+            if(window.location.hash)
+            {
+                var name = window.location.hash.substring(2);
+                // name = name.replace(/-/g," ");
+                var index = name.indexOf('#'); // Remove any hash fragments from the url (Disquss adds hash fragments for comments, but results in 404 pages)
+                if(index >= 0)
+                    name = name.substring(0, index);
+                
+                window.location.href = "https://learnopengl.com/" + name;
+            } else {
+                    // Check if data has been succesfully loaded, if so: change title bar as ajax hash fragment
+                    var title = $('#content-url').text();
+                  
+                    // Refresh syntax highlighting
+                    // $('pre').each(function(i, e) {hljs.highlightBlock(e)});
+                  
+                    // Reset DISQUS
+                    // if(title == '/dev/')
+                        // title = '';
+                    // alert('hoi');
+                    
+                    // Adjust ads for correct bottom positioning based on content size
+                    window.setTimeout(function() {  
+                        AdPositioning();
+                     }, 3000);
+                  
+                  
+                    // set API resets after time-out (once content is properly loaded)
+                    window.setTimeout(function() {  
+                        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);       
+                        MathJax.Hub.Queue(["resetEquationNumbers", MathJax.InputJax.TeX]);
+                        
+                        var page_url = title == "" ? "http://www.learnopengl.com/" : "http://www.learnopengl.com/" + title;
+                        if(typeof DISQUS !== 'undefined') {                                              
+                            DISQUS.reset({
+                              reload: true,
+                              config: function () {  
+                                this.page.identifier = title;  
+                                this.page.url = page_url;
+                              }
+                            });
+                            $('#disqus_thread').show();
+                        }
+                           // Refresh callbacks on <function> tags
+                        SetFunctionTagCallbacks();        
+                    }, 1000);
+                                        
+                    // Zet ook de juiste button op 'selected'
+                    $('#nav li span, #nav li a').removeClass('selected');                
+                    if(title != '')
+                    {                    
+                        $('#nav li[id=\'' + title + '\']').children('span, a').addClass('selected');
+                    }
+                    // En open menu waar nodig
+                    var parents = $('#nav span.selected, #nav a.selected').parents('li').children('span.closed, a.closed');
+                    var index = 0;
+                    for(index = parents.length - 1; index >= 0; index--)
+                    {             
+                        
+                        var id = $(parents[index]).attr("id").replace( /^\D+/g, '');
+                        MenuClick(id, false);
+                    }                          
+                
+            }
+        });
+		// var initialized = false;
+        // window.onpopstate = function() {
+            // if(initialized)
+                // LoadPage();
+			// else
+				// initialized = true;
+        // };
+        
+        // Set up DISQUS
+        // $(document).ready(function() {
+            var disqus_shortname = 'learnopengl';
+            (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();           
+        // });
+    </script><script type="text/javascript" async="" src="./LearnOpenGL - Camera_files/embed.js"></script>
+<link rel="prefetch" as="style" href="https://c.disquscdn.com/next/embed/styles/lounge.a8dc02def3107413d47189b1bce61bd9.css"><link rel="prefetch" as="script" href="https://c.disquscdn.com/next/embed/common.bundle.8ac9c329dc983d9d79850ad054bf95bf.js"><link rel="prefetch" as="script" href="https://c.disquscdn.com/next/embed/lounge.bundle.400ba23b9fd91b5e95cf8f6cef48480a.js"><link rel="prefetch" as="script" href="https://disqus.com/next/config.js"><style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
+.MathJax_Menu_Button .MathJax_Hover_Arrow {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; -khtml-border-radius: 4px; font-family: 'Courier New',Courier; font-size: 9px; color: #F0F0F0}
+.MathJax_Menu_Button .MathJax_Hover_Arrow span {display: block; background-color: #AAA; border: 1px solid; border-radius: 3px; line-height: 0; padding: 4px}
+.MathJax_Hover_Arrow:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_Hover_Arrow:hover span {background-color: #CCC!important}
+</style><style type="text/css">#MathJax_About {position: fixed; left: 50%; width: auto; text-align: center; border: 3px outset; padding: 1em 2em; background-color: #DDDDDD; color: black; cursor: default; font-family: message-box; font-size: 120%; font-style: normal; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; -khtml-border-radius: 15px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_About.MathJax_MousePost {outline: none}
+.MathJax_Menu {position: absolute; background-color: white; color: black; width: auto; padding: 5px 0px; border: 1px solid #CCCCCC; margin: 0; cursor: default; font: menu; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -khtml-border-radius: 5px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_MenuItem {padding: 1px 2em; background: transparent}
+.MathJax_MenuArrow {position: absolute; right: .5em; padding-top: .25em; color: #666666; font-size: .75em}
+.MathJax_MenuActive .MathJax_MenuArrow {color: white}
+.MathJax_MenuArrow.RTL {left: .5em; right: auto}
+.MathJax_MenuCheck {position: absolute; left: .7em}
+.MathJax_MenuCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuRadioCheck {position: absolute; left: .7em}
+.MathJax_MenuRadioCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuLabel {padding: 1px 2em 3px 1.33em; font-style: italic}
+.MathJax_MenuRule {border-top: 1px solid #DDDDDD; margin: 4px 3px}
+.MathJax_MenuDisabled {color: GrayText}
+.MathJax_MenuActive {background-color: #606872; color: white}
+.MathJax_MenuDisabled:focus, .MathJax_MenuLabel:focus {background-color: #E8E8E8}
+.MathJax_ContextMenu:focus {outline: none}
+.MathJax_ContextMenu .MathJax_MenuItem:focus {outline: none}
+#MathJax_AboutClose {top: .2em; right: .2em}
+.MathJax_Menu .MathJax_MenuClose {top: -10px; left: -10px}
+.MathJax_MenuClose {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; font-family: 'Courier New',Courier; font-size: 24px; color: #F0F0F0}
+.MathJax_MenuClose span {display: block; background-color: #AAA; border: 1.5px solid; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; line-height: 0; padding: 8px 0 6px}
+.MathJax_MenuClose:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_MenuClose:hover span {background-color: #CCC!important}
+.MathJax_MenuClose:hover:focus {outline: none}
+</style><style type="text/css">.MathJax_Preview .MJXf-math {color: inherit!important}
+</style><style type="text/css">.MJX_Assistive_MathML {position: absolute!important; top: 0; left: 0; clip: rect(1px, 1px, 1px, 1px); padding: 1px 0 0 0!important; border: 0!important; height: 1px!important; width: 1px!important; overflow: hidden!important; display: block!important; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none}
+.MJX_Assistive_MathML.MJX_Assistive_MathML_Block {width: 100%!important}
+</style><style type="text/css">#MathJax_Zoom {position: absolute; background-color: #F0F0F0; overflow: auto; display: block; z-index: 301; padding: .5em; border: 1px solid black; margin: 0; font-weight: normal; font-style: normal; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; -webkit-box-sizing: content-box; -moz-box-sizing: content-box; box-sizing: content-box; box-shadow: 5px 5px 15px #AAAAAA; -webkit-box-shadow: 5px 5px 15px #AAAAAA; -moz-box-shadow: 5px 5px 15px #AAAAAA; -khtml-box-shadow: 5px 5px 15px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+#MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
+#MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+</style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1em; bottom: 1.5em; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style><style type="text/css">.MJXp-script {font-size: .8em}
+.MJXp-right {-webkit-transform-origin: right; -moz-transform-origin: right; -ms-transform-origin: right; -o-transform-origin: right; transform-origin: right}
+.MJXp-bold {font-weight: bold}
+.MJXp-italic {font-style: italic}
+.MJXp-scr {font-family: MathJax_Script,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-frak {font-family: MathJax_Fraktur,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-sf {font-family: MathJax_SansSerif,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-cal {font-family: MathJax_Caligraphic,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-mono {font-family: MathJax_Typewriter,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-largeop {font-size: 150%}
+.MJXp-largeop.MJXp-int {vertical-align: -.2em}
+.MJXp-math {display: inline-block; line-height: 1.2; text-indent: 0; font-family: 'Times New Roman',Times,STIXGeneral,serif; white-space: nowrap; border-collapse: collapse}
+.MJXp-display {display: block; text-align: center; margin: 1em 0}
+.MJXp-math span {display: inline-block}
+.MJXp-box {display: block!important; text-align: center}
+.MJXp-box:after {content: " "}
+.MJXp-rule {display: block!important; margin-top: .1em}
+.MJXp-char {display: block!important}
+.MJXp-mo {margin: 0 .15em}
+.MJXp-mfrac {margin: 0 .125em; vertical-align: .25em}
+.MJXp-denom {display: inline-table!important; width: 100%}
+.MJXp-denom > * {display: table-row!important}
+.MJXp-surd {vertical-align: top}
+.MJXp-surd > * {display: block!important}
+.MJXp-script-box > *  {display: table!important; height: 50%}
+.MJXp-script-box > * > * {display: table-cell!important; vertical-align: top}
+.MJXp-script-box > *:last-child > * {vertical-align: bottom}
+.MJXp-script-box > * > * > * {display: block!important}
+.MJXp-mphantom {visibility: hidden}
+.MJXp-munderover {display: inline-table!important}
+.MJXp-over {display: inline-block!important; text-align: center}
+.MJXp-over > * {display: block!important}
+.MJXp-munderover > * {display: table-row!important}
+.MJXp-mtable {vertical-align: .25em; margin: 0 .125em}
+.MJXp-mtable > * {display: inline-table!important; vertical-align: middle}
+.MJXp-mtr {display: table-row!important}
+.MJXp-mtd {display: table-cell!important; text-align: center; padding: .5em 0 0 .5em}
+.MJXp-mtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-mlabeledtr {display: table-row!important}
+.MJXp-mlabeledtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mlabeledtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MJXp-scale0 {-webkit-transform: scaleX(.0); -moz-transform: scaleX(.0); -ms-transform: scaleX(.0); -o-transform: scaleX(.0); transform: scaleX(.0)}
+.MJXp-scale1 {-webkit-transform: scaleX(.1); -moz-transform: scaleX(.1); -ms-transform: scaleX(.1); -o-transform: scaleX(.1); transform: scaleX(.1)}
+.MJXp-scale2 {-webkit-transform: scaleX(.2); -moz-transform: scaleX(.2); -ms-transform: scaleX(.2); -o-transform: scaleX(.2); transform: scaleX(.2)}
+.MJXp-scale3 {-webkit-transform: scaleX(.3); -moz-transform: scaleX(.3); -ms-transform: scaleX(.3); -o-transform: scaleX(.3); transform: scaleX(.3)}
+.MJXp-scale4 {-webkit-transform: scaleX(.4); -moz-transform: scaleX(.4); -ms-transform: scaleX(.4); -o-transform: scaleX(.4); transform: scaleX(.4)}
+.MJXp-scale5 {-webkit-transform: scaleX(.5); -moz-transform: scaleX(.5); -ms-transform: scaleX(.5); -o-transform: scaleX(.5); transform: scaleX(.5)}
+.MJXp-scale6 {-webkit-transform: scaleX(.6); -moz-transform: scaleX(.6); -ms-transform: scaleX(.6); -o-transform: scaleX(.6); transform: scaleX(.6)}
+.MJXp-scale7 {-webkit-transform: scaleX(.7); -moz-transform: scaleX(.7); -ms-transform: scaleX(.7); -o-transform: scaleX(.7); transform: scaleX(.7)}
+.MJXp-scale8 {-webkit-transform: scaleX(.8); -moz-transform: scaleX(.8); -ms-transform: scaleX(.8); -o-transform: scaleX(.8); transform: scaleX(.8)}
+.MJXp-scale9 {-webkit-transform: scaleX(.9); -moz-transform: scaleX(.9); -ms-transform: scaleX(.9); -o-transform: scaleX(.9); transform: scaleX(.9)}
+.MathJax_PHTML .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style><style type="text/css">.MathJax_Display {text-align: center; margin: 1em 0em; position: relative; display: block!important; text-indent: 0; max-width: none; max-height: none; min-width: 0; min-height: 0; width: 100%}
+.MathJax .merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MathJax .MJX-monospace {font-family: monospace}
+.MathJax .MJX-sans-serif {font-family: sans-serif}
+#MathJax_Tooltip {background-color: InfoBackground; color: InfoText; border: 1px solid black; box-shadow: 2px 2px 5px #AAAAAA; -webkit-box-shadow: 2px 2px 5px #AAAAAA; -moz-box-shadow: 2px 2px 5px #AAAAAA; -khtml-box-shadow: 2px 2px 5px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true'); padding: 3px 4px; z-index: 401; position: absolute; left: 0; top: 0; width: auto; height: auto; display: none}
+.MathJax {display: inline; font-style: normal; font-weight: normal; line-height: normal; font-size: 100%; font-size-adjust: none; text-indent: 0; text-align: left; text-transform: none; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; direction: ltr; max-width: none; max-height: none; min-width: 0; min-height: 0; border: 0; padding: 0; margin: 0}
+.MathJax:focus, body :focus .MathJax {display: inline-table}
+.MathJax img, .MathJax nobr, .MathJax a {border: 0; padding: 0; margin: 0; max-width: none; max-height: none; min-width: 0; min-height: 0; vertical-align: 0; line-height: normal; text-decoration: none}
+img.MathJax_strut {border: 0!important; padding: 0!important; margin: 0!important; vertical-align: 0!important}
+.MathJax span {display: inline; position: static; border: 0; padding: 0; margin: 0; vertical-align: 0; line-height: normal; text-decoration: none}
+.MathJax nobr {white-space: nowrap!important}
+.MathJax img {display: inline!important; float: none!important}
+.MathJax * {transition: none; -webkit-transition: none; -moz-transition: none; -ms-transition: none; -o-transition: none}
+.MathJax_Processing {visibility: hidden; position: fixed; width: 0; height: 0; overflow: hidden}
+.MathJax_Processed {display: none!important}
+.MathJax_ExBox {display: block!important; overflow: hidden; width: 1px; height: 60ex; min-height: 0; max-height: none}
+.MathJax .MathJax_EmBox {display: block!important; overflow: hidden; width: 1px; height: 60em; min-height: 0; max-height: none}
+.MathJax .MathJax_HitBox {cursor: text; background: white; opacity: 0; filter: alpha(opacity=0)}
+.MathJax .MathJax_HitBox * {filter: none; opacity: 1; background: transparent}
+#MathJax_Tooltip * {filter: none; opacity: 1; background: transparent}
+@font-face {font-family: MathJax_Main; src: url('https://learnopengl.com/js/mathjax/fonts/HTML-CSS/TeX/woff/MathJax_Main-Regular.woff?rev=2.6.1') format('woff'), url('https://learnopengl.com/js/mathjax/fonts/HTML-CSS/TeX/otf/MathJax_Main-Regular.otf?rev=2.6.1') format('opentype')}
+@font-face {font-family: MathJax_Main-bold; src: url('https://learnopengl.com/js/mathjax/fonts/HTML-CSS/TeX/woff/MathJax_Main-Bold.woff?rev=2.6.1') format('woff'), url('https://learnopengl.com/js/mathjax/fonts/HTML-CSS/TeX/otf/MathJax_Main-Bold.otf?rev=2.6.1') format('opentype')}
+@font-face {font-family: MathJax_Main-italic; src: url('https://learnopengl.com/js/mathjax/fonts/HTML-CSS/TeX/woff/MathJax_Main-Italic.woff?rev=2.6.1') format('woff'), url('https://learnopengl.com/js/mathjax/fonts/HTML-CSS/TeX/otf/MathJax_Main-Italic.otf?rev=2.6.1') format('opentype')}
+@font-face {font-family: MathJax_Math-italic; src: url('https://learnopengl.com/js/mathjax/fonts/HTML-CSS/TeX/woff/MathJax_Math-Italic.woff?rev=2.6.1') format('woff'), url('https://learnopengl.com/js/mathjax/fonts/HTML-CSS/TeX/otf/MathJax_Math-Italic.otf?rev=2.6.1') format('opentype')}
+@font-face {font-family: MathJax_Caligraphic; src: url('https://learnopengl.com/js/mathjax/fonts/HTML-CSS/TeX/woff/MathJax_Caligraphic-Regular.woff?rev=2.6.1') format('woff'), url('https://learnopengl.com/js/mathjax/fonts/HTML-CSS/TeX/otf/MathJax_Caligraphic-Regular.otf?rev=2.6.1') format('opentype')}
+@font-face {font-family: MathJax_Size1; src: url('https://learnopengl.com/js/mathjax/fonts/HTML-CSS/TeX/woff/MathJax_Size1-Regular.woff?rev=2.6.1') format('woff'), url('https://learnopengl.com/js/mathjax/fonts/HTML-CSS/TeX/otf/MathJax_Size1-Regular.otf?rev=2.6.1') format('opentype')}
+@font-face {font-family: MathJax_Size2; src: url('https://learnopengl.com/js/mathjax/fonts/HTML-CSS/TeX/woff/MathJax_Size2-Regular.woff?rev=2.6.1') format('woff'), url('https://learnopengl.com/js/mathjax/fonts/HTML-CSS/TeX/otf/MathJax_Size2-Regular.otf?rev=2.6.1') format('opentype')}
+@font-face {font-family: MathJax_Size3; src: url('https://learnopengl.com/js/mathjax/fonts/HTML-CSS/TeX/woff/MathJax_Size3-Regular.woff?rev=2.6.1') format('woff'), url('https://learnopengl.com/js/mathjax/fonts/HTML-CSS/TeX/otf/MathJax_Size3-Regular.otf?rev=2.6.1') format('opentype')}
+@font-face {font-family: MathJax_Size4; src: url('https://learnopengl.com/js/mathjax/fonts/HTML-CSS/TeX/woff/MathJax_Size4-Regular.woff?rev=2.6.1') format('woff'), url('https://learnopengl.com/js/mathjax/fonts/HTML-CSS/TeX/otf/MathJax_Size4-Regular.otf?rev=2.6.1') format('opentype')}
+.MathJax .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style></head>
+<body style=""><div style="visibility: hidden; overflow: hidden; position: absolute; top: 0px; height: 1px; width: auto; padding: 0px; border: 0px; margin: 0px; text-align: left; text-indent: 0px; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal;"><div id="MathJax_Hidden"></div></div><div id="MathJax_Message" style="display: none;"></div>
+<a href="https://learnopengl.com/">
+<div id="header">
+</div>
+</a>
+
+<div id="supercontainer">
+    <!-- 728x90/320x50 -->
+    <div id="header_ad">
+        <div id="waldo-tag-6194"></div>
+    </div>
+    <div id="rightad_container" style="height: 12392px;">
+        <div id="rightad">
+            <!-- /8491498/learnopengl_video -->
+            <!--<div id='div-gpt-ad-1540574378241-0' style='height:225px; width:300px;'>
+			<script>
+			googletag.cmd.push(function() { googletag.display('div-gpt-ad-1540574378241-0'); });
+			</script>
+			</div>            
+            <br/>-->
+           
+            <div id="waldo-tag-1715"></div>
+        </div>
+
+        <div id="admessage">
+            If you're running AdBlock, please consider whitelisting this site if you'd like to support LearnOpenGL; and no worries, I won't be mad if you don't :)
+            <!--<br/><br/>
+            Also, check out this little local multiplayer-only game I've made: <a href="https://store.steampowered.com/app/983590/Tank_Blazers/" target="_blank">Tank Blazers</a>.
+            <br/>
+            <a href="https://store.steampowered.com/app/983590/Tank_Blazers" target="_blank"><img src="/img/tank_blazers.jpg"  style="width:278px; margin-top: 9px; margin-left: -3px;"/></a>-->
+        </div>
+        
+        <div id="rightonethirdad" style="display: block; top: 3976.67px;">
+            <div id="waldo-tag-2246"></div>
+        </div>
+        
+        <div id="rightbottomad" style="display: block;">            
+			<div id="waldo-tag-2247"></div>								
+        </div>
+    </div>
+    <div id="container">
+        <div id="loading"></div>
+<script> 
+$(document).ready(function() {
+$('#menu-item4').mousedown(function() { MenuClick(4, true) });
+$('#menu-item48').mousedown(function() { MenuClick(48, true) });
+$('#menu-item56').mousedown(function() { MenuClick(56, true) });
+$('#menu-item63').mousedown(function() { MenuClick(63, true) });
+$('#menu-item100').mousedown(function() { MenuClick(100, true) });
+$('#menu-item102').mousedown(function() { MenuClick(102, true) });
+$('#menu-item113').mousedown(function() { MenuClick(113, true) });
+$('#menu-item116').mousedown(function() { MenuClick(116, true) });
+$('#menu-item78').mousedown(function() { MenuClick(78, true) });
+$('#menu-item81').mousedown(function() { MenuClick(81, true) });
+$('#menu-item85').mousedown(function() { MenuClick(85, true) });
+}); 
+</script>   
+    <div id="nav" style="height: 12392px;">
+         <div id="social">
+            <a href="https://github.com/JoeyDeVries/LearnOpenGL" target="_blank">
+                    <img src="./LearnOpenGL - Camera_files/github.png" class="social_ico">
+            </a>
+             <!-- <a href="https://www.facebook.com/Learnopengl-2199631333595544/" target="_blank">
+                <img src="/img/facebook.png" class="social_ico">
+            </a>-->
+            <a href="https://twitter.com/JoeyDeVriez" target="_blank">
+                <img src="./LearnOpenGL - Camera_files/twitter.png" class="social_ico">
+            </a>
+          
+        </div>
+    <img src="./LearnOpenGL - Camera_files/nav-button_bottom-arrow.png" style="display: none"><ol><li id="Introduction"><a id="menu-item1" href="https://learnopengl.com/Introduction">Introduction </a></li><li id="Getting-started"><span id="menu-item4" class="open">Getting started </span><ol id="menu-items-of4" style=""><li id="Getting-started/OpenGL"><a id="menu-item49" href="https://learnopengl.com/Getting-started/OpenGL">OpenGL </a></li><li id="Getting-started/Creating-a-window"><a id="menu-item5" href="https://learnopengl.com/Getting-started/Creating-a-window">Creating a window </a></li><li id="Getting-started/Hello-Window"><a id="menu-item6" href="https://learnopengl.com/Getting-started/Hello-Window">Hello Window </a></li><li id="Getting-started/Hello-Triangle"><a id="menu-item38" href="https://learnopengl.com/Getting-started/Hello-Triangle">Hello Triangle </a></li><li id="Getting-started/Shaders"><a id="menu-item39" href="https://learnopengl.com/Getting-started/Shaders">Shaders </a></li><li id="Getting-started/Textures"><a id="menu-item40" href="https://learnopengl.com/Getting-started/Textures">Textures </a></li><li id="Getting-started/Transformations"><a id="menu-item43" href="https://learnopengl.com/Getting-started/Transformations">Transformations </a></li><li id="Getting-started/Coordinate-Systems"><a id="menu-item44" href="https://learnopengl.com/Getting-started/Coordinate-Systems">Coordinate Systems </a></li><li id="Getting-started/Camera"><a id="menu-item47" href="https://learnopengl.com/Getting-started/Camera" class="selected">Camera </a></li><li id="Getting-started/Review"><a id="menu-item50" href="https://learnopengl.com/Getting-started/Review">Review </a></li></ol></li><li id="Lighting"><span id="menu-item48" class="closed">Lighting </span><ol id="menu-items-of48" style="display:none;"><li id="Lighting/Colors"><a id="menu-item51" href="https://learnopengl.com/Lighting/Colors">Colors </a></li><li id="Lighting/Basic-Lighting"><a id="menu-item52" href="https://learnopengl.com/Lighting/Basic-Lighting">Basic Lighting </a></li><li id="Lighting/Materials"><a id="menu-item53" href="https://learnopengl.com/Lighting/Materials">Materials </a></li><li id="Lighting/Lighting-maps"><a id="menu-item54" href="https://learnopengl.com/Lighting/Lighting-maps">Lighting maps </a></li><li id="Lighting/Light-casters"><a id="menu-item55" href="https://learnopengl.com/Lighting/Light-casters">Light casters </a></li><li id="Lighting/Multiple-lights"><a id="menu-item58" href="https://learnopengl.com/Lighting/Multiple-lights">Multiple lights </a></li><li id="Lighting/Review"><a id="menu-item57" href="https://learnopengl.com/Lighting/Review">Review </a></li></ol></li><li id="Model-Loading"><span id="menu-item56" class="closed">Model Loading </span><ol id="menu-items-of56" style="display:none;"><li id="Model-Loading/Assimp"><a id="menu-item59" href="https://learnopengl.com/Model-Loading/Assimp">Assimp </a></li><li id="Model-Loading/Mesh"><a id="menu-item60" href="https://learnopengl.com/Model-Loading/Mesh">Mesh </a></li><li id="Model-Loading/Model"><a id="menu-item61" href="https://learnopengl.com/Model-Loading/Model">Model </a></li></ol></li><li id="Advanced-OpenGL"><span id="menu-item63" class="closed">Advanced OpenGL </span><ol id="menu-items-of63" style="display:none;"><li id="Advanced-OpenGL/Depth-testing"><a id="menu-item72" href="https://learnopengl.com/Advanced-OpenGL/Depth-testing">Depth testing </a></li><li id="Advanced-OpenGL/Stencil-testing"><a id="menu-item73" href="https://learnopengl.com/Advanced-OpenGL/Stencil-testing">Stencil testing </a></li><li id="Advanced-OpenGL/Blending"><a id="menu-item74" href="https://learnopengl.com/Advanced-OpenGL/Blending">Blending </a></li><li id="Advanced-OpenGL/Face-culling"><a id="menu-item77" href="https://learnopengl.com/Advanced-OpenGL/Face-culling">Face culling </a></li><li id="Advanced-OpenGL/Framebuffers"><a id="menu-item65" href="https://learnopengl.com/Advanced-OpenGL/Framebuffers">Framebuffers </a></li><li id="Advanced-OpenGL/Cubemaps"><a id="menu-item66" href="https://learnopengl.com/Advanced-OpenGL/Cubemaps">Cubemaps </a></li><li id="Advanced-OpenGL/Advanced-Data"><a id="menu-item69" href="https://learnopengl.com/Advanced-OpenGL/Advanced-Data">Advanced Data </a></li><li id="Advanced-OpenGL/Advanced-GLSL"><a id="menu-item67" href="https://learnopengl.com/Advanced-OpenGL/Advanced-GLSL">Advanced GLSL </a></li><li id="Advanced-OpenGL/Geometry-Shader"><a id="menu-item68" href="https://learnopengl.com/Advanced-OpenGL/Geometry-Shader">Geometry Shader </a></li><li id="Advanced-OpenGL/Instancing"><a id="menu-item70" href="https://learnopengl.com/Advanced-OpenGL/Instancing">Instancing </a></li><li id="Advanced-OpenGL/Anti-Aliasing"><a id="menu-item75" href="https://learnopengl.com/Advanced-OpenGL/Anti-Aliasing">Anti Aliasing </a></li></ol></li><li id="Advanced-Lighting"><span id="menu-item100" class="closed">Advanced Lighting </span><ol id="menu-items-of100" style="display:none;"><li id="Advanced-Lighting/Advanced-Lighting"><a id="menu-item101" href="https://learnopengl.com/Advanced-Lighting/Advanced-Lighting">Advanced Lighting </a></li><li id="Advanced-Lighting/Gamma-Correction"><a id="menu-item110" href="https://learnopengl.com/Advanced-Lighting/Gamma-Correction">Gamma Correction </a></li><li id="Advanced-Lighting/Shadows"><span id="menu-item102" class="closed">Shadows </span><ol id="menu-items-of102" style="display:none;"><li id="Advanced-Lighting/Shadows/Shadow-Mapping"><a id="menu-item103" href="https://learnopengl.com/Advanced-Lighting/Shadows/Shadow-Mapping">Shadow Mapping </a></li><li id="Advanced-Lighting/Shadows/Point-Shadows"><a id="menu-item104" href="https://learnopengl.com/Advanced-Lighting/Shadows/Point-Shadows">Point Shadows </a></li></ol></li><li id="Advanced-Lighting/Normal-Mapping"><a id="menu-item106" href="https://learnopengl.com/Advanced-Lighting/Normal-Mapping">Normal Mapping </a></li><li id="Advanced-Lighting/Parallax-Mapping"><a id="menu-item107" href="https://learnopengl.com/Advanced-Lighting/Parallax-Mapping">Parallax Mapping </a></li><li id="Advanced-Lighting/HDR"><a id="menu-item111" href="https://learnopengl.com/Advanced-Lighting/HDR">HDR </a></li><li id="Advanced-Lighting/Bloom"><a id="menu-item112" href="https://learnopengl.com/Advanced-Lighting/Bloom">Bloom </a></li><li id="Advanced-Lighting/Deferred-Shading"><a id="menu-item108" href="https://learnopengl.com/Advanced-Lighting/Deferred-Shading">Deferred Shading </a></li><li id="Advanced-Lighting/SSAO"><a id="menu-item109" href="https://learnopengl.com/Advanced-Lighting/SSAO">SSAO </a></li></ol></li><li id="PBR"><span id="menu-item113" class="closed">PBR </span><ol id="menu-items-of113" style="display:none;"><li id="PBR/Theory"><a id="menu-item114" href="https://learnopengl.com/PBR/Theory">Theory </a></li><li id="PBR/Lighting"><a id="menu-item115" href="https://learnopengl.com/PBR/Lighting">Lighting </a></li><li id="PBR/IBL"><span id="menu-item116" class="closed">IBL </span><ol id="menu-items-of116" style="display:none;"><li id="PBR/IBL/Diffuse-irradiance"><a id="menu-item117" href="https://learnopengl.com/PBR/IBL/Diffuse-irradiance">Diffuse irradiance </a></li><li id="PBR/IBL/Specular-IBL"><a id="menu-item118" href="https://learnopengl.com/PBR/IBL/Specular-IBL">Specular IBL </a></li></ol></li></ol></li><li id="In-Practice"><span id="menu-item78" class="closed">In Practice </span><ol id="menu-items-of78" style="display:none;"><li id="In-Practice/Debugging"><a id="menu-item79" href="https://learnopengl.com/In-Practice/Debugging">Debugging </a></li><li id="In-Practice/Text-Rendering"><a id="menu-item80" href="https://learnopengl.com/In-Practice/Text-Rendering">Text Rendering </a></li><li id="In-Practice/2D-Game"><span id="menu-item81" class="closed">2D Game </span><ol id="menu-items-of81" style="display:none;"><li id="In-Practice/2D-Game/Breakout"><a id="menu-item82" href="https://learnopengl.com/In-Practice/2D-Game/Breakout">Breakout </a></li><li id="In-Practice/2D-Game/Setting-up"><a id="menu-item88" href="https://learnopengl.com/In-Practice/2D-Game/Setting-up">Setting up </a></li><li id="In-Practice/2D-Game/Rendering-Sprites"><a id="menu-item83" href="https://learnopengl.com/In-Practice/2D-Game/Rendering-Sprites">Rendering Sprites </a></li><li id="In-Practice/2D-Game/Levels"><a id="menu-item84" href="https://learnopengl.com/In-Practice/2D-Game/Levels">Levels </a></li><li id="In-Practice/2D-Game/Collisions"><span id="menu-item85" class="closed">Collisions </span><ol id="menu-items-of85" style="display:none;"><li id="In-Practice/2D-Game/Collisions/Ball"><a id="menu-item95" href="https://learnopengl.com/In-Practice/2D-Game/Collisions/Ball">Ball </a></li><li id="In-Practice/2D-Game/Collisions/Collision-detection"><a id="menu-item96" href="https://learnopengl.com/In-Practice/2D-Game/Collisions/Collision-detection">Collision detection </a></li><li id="In-Practice/2D-Game/Collisions/Collision-resolution"><a id="menu-item97" href="https://learnopengl.com/In-Practice/2D-Game/Collisions/Collision-resolution">Collision resolution </a></li></ol></li><li id="In-Practice/2D-Game/Particles"><a id="menu-item89" href="https://learnopengl.com/In-Practice/2D-Game/Particles">Particles </a></li><li id="In-Practice/2D-Game/Postprocessing"><a id="menu-item90" href="https://learnopengl.com/In-Practice/2D-Game/Postprocessing">Postprocessing </a></li><li id="In-Practice/2D-Game/Powerups"><a id="menu-item91" href="https://learnopengl.com/In-Practice/2D-Game/Powerups">Powerups </a></li><li id="In-Practice/2D-Game/Audio"><a id="menu-item94" href="https://learnopengl.com/In-Practice/2D-Game/Audio">Audio </a></li><li id="In-Practice/2D-Game/Render-text"><a id="menu-item92" href="https://learnopengl.com/In-Practice/2D-Game/Render-text">Render text </a></li><li id="In-Practice/2D-Game/Final-thoughts"><a id="menu-item93" href="https://learnopengl.com/In-Practice/2D-Game/Final-thoughts">Final thoughts </a></li></ol></li></ol></li><li id="Code-repository"><a id="menu-item99" href="https://learnopengl.com/Code-repository">Code repository </a></li><li id="Translations"><a id="menu-item119" href="https://learnopengl.com/Translations">Translations </a></li><li id="About"><a id="menu-item2" href="https://learnopengl.com/About">About </a></li></ol>       <div id="donate">
+            <a href="https://www.paypal.me/learnopengl/" target="_blank">
+                <div id="donate_img"></div>
+                <img style="display: none" src="./LearnOpenGL - Camera_files/donate_button_hover.png">
+                <!--<img id="donate_img" src="img/patreon.png"/>-->
+            </a>
+          <!--<div id="alipay">
+            <img style="width: 150px;" class="clean" src="/img/alipay_logo.png"/>
+            <img style="width: 150px; margin-top: 5px" src="/img/alipay.png"/>
+          </div>-->
+        </div> 
+      <div id="menu_book">
+            <a href="https://www.amazon.com/dp/9090332561/" target="_blank"><img src="./LearnOpenGL - Camera_files/below_menu.png" class="clean"></a>
+        </div>
+        <div id="alipay">
+          
+        </div>
+        <div id="ad">
+							<!--<div id="waldo-tag-1684"></div>-->
+			        </div>
+      
+        <div id="lefttwothirdad" style="display: block; top: 8186.33px;">
+            <div id="waldo-tag-2245"></div>
+        </div>
+    </div>
+    
+    <div id="content">
+    <h1 id="content-title">Camera</h1>
+<h1 id="content-url" style="display:none;">Getting-started/Camera</h1>
+<p>
+  In the previous chapter we discussed the view matrix and how we can use the view matrix to move around the scene (we moved backwards a little). OpenGL by itself is not familiar with the concept of a <em>camera</em>, but we can try to simulate one by moving all objects in the scene in the reverse direction, giving the illusion that <strong>we</strong> are moving.
+</p>
+
+<p>
+  In this chapter we'll discuss how we can set up a camera in OpenGL. We will discuss a fly style camera that allows you to freely move around in a 3D scene. We'll also discuss keyboard and mouse input and finish with a custom camera class.
+</p>
+
+<h2>Camera/View space</h2>
+<p>
+  When we're talking about camera/view space we're talking about all the vertex coordinates as seen from the camera's perspective as the origin of the scene: the view matrix transforms all the world coordinates into view coordinates that are relative to the camera's position and direction. To define a camera we need its position in world space, the direction it's looking at, a vector pointing to the right and a vector pointing upwards from the camera. A careful reader may notice that we're actually going to create a coordinate system with 3 perpendicular unit axes with the camera's position as the origin.
+</p>
+
+<img src="./LearnOpenGL - Camera_files/camera_axes.png" class="clean">
+
+<h3>1. Camera position</h3>
+<p>
+  Getting the camera position is easy. The camera position is a vector in world space that points to the camera's position. We set the camera at the same position we've set the camera in the previous chapter:
+</p>
+
+<pre><code class=" hljs cpp">
+glm::<span class="hljs-built_in">vec3</span> cameraPos = glm::<span class="hljs-built_in">vec3</span>(<span class="hljs-number">0.0f</span>, <span class="hljs-number">0.0f</span>, <span class="hljs-number">3.0f</span>);  
+</code></pre>
+
+<note>
+  Don't forget that the positive z-axis is going through your screen towards you so if we want the camera to move backwards, we move along the positive z-axis.
+</note>
+
+<h3>2. Camera direction</h3>
+<p>
+  The next vector required is the camera's direction e.g. at what direction it is pointing at. For now we let the camera point to the origin of our scene: <code>(0,0,0)</code>. Remember that if we subtract two vectors from each other we get a vector that's the difference of these two vectors? Subtracting the camera position vector from the scene's origin vector thus results in the direction vector we want. For the view matrix's coordinate system we want its z-axis to be positive and because by convention (in OpenGL) the camera points towards the negative z-axis we want to negate the direction vector. If we switch the subtraction order around we now get a vector pointing towards the camera's positive z-axis:
+</p>
+
+<pre><code class=" hljs cpp">
+glm::<span class="hljs-built_in">vec3</span> cameraTarget = glm::<span class="hljs-built_in">vec3</span>(<span class="hljs-number">0.0f</span>, <span class="hljs-number">0.0f</span>, <span class="hljs-number">0.0f</span>);
+glm::<span class="hljs-built_in">vec3</span> cameraDirection = glm::normalize(cameraPos - cameraTarget);
+</code></pre>
+
+<warning>
+  The name <em>direction</em> vector is not the best chosen name, since it is actually pointing in the reverse direction of what it is targeting.
+</warning>
+
+<h3>3. Right axis</h3>
+<p>
+  The next vector that we need is a <em>right</em> vector that represents the positive x-axis of the camera space. To get the <em>right</em> vector we use a little trick by first specifying an <em>up</em> vector that points upwards (in world space). Then we do a cross product on the up vector and the direction vector from step 2. Since the result of a cross product is a vector perpendicular to both vectors, we will get a vector that points in the positive x-axis's direction (if we would switch the cross product order we'd get a vector that points in the negative x-axis): 
+</p>
+
+<pre><code class=" hljs cpp">
+glm::<span class="hljs-built_in">vec3</span> up = glm::<span class="hljs-built_in">vec3</span>(<span class="hljs-number">0.0f</span>, <span class="hljs-number">1.0f</span>, <span class="hljs-number">0.0f</span>); 
+glm::<span class="hljs-built_in">vec3</span> cameraRight = glm::normalize(<function id="61">glm::cross</function>(up, cameraDirection));
+</code></pre>
+
+<h3>4. Up axis</h3>
+<p>
+  Now that we have both the x-axis vector and the z-axis vector, retrieving the vector that points to the camera's positive y-axis is relatively easy: we take the cross product of the right and direction vector:
+</p>
+
+<pre><code class=" hljs cpp">
+glm::<span class="hljs-built_in">vec3</span> cameraUp = <function id="61">glm::cross</function>(cameraDirection, cameraRight);
+</code></pre>
+
+<p>
+	With the help of the cross product and a few tricks we were able to create all the vectors that form the view/camera space. For the more mathematically inclined readers, this process is known as the <a href="http://en.wikipedia.org/wiki/Gram%E2%80%93Schmidt_process" target="_blank">Gram-Schmidt</a> process in linear algebra. Using these camera vectors we can now create a <def>LookAt</def> matrix that proves very useful for creating a camera.
+</p>
+
+<h2>Look At</h2>
+<p>
+  A great thing about matrices is that if you define a coordinate space using 3 perpendicular (or non-linear) axes you can create a matrix with those 3 axes plus a translation vector and you can  transform any vector to that coordinate space by multiplying it with this matrix. This is exactly what the <em>LookAt</em> matrix does and now that we have 3 perpendicular axes and a position vector to define the camera space we can create our own LookAt matrix:
+  
+  <span class="MathJax_Preview" style="color: inherit;"></span><div class="MathJax_Display" style="text-align: center;"><span class="MathJax" id="MathJax-Element-1-Frame" tabindex="0" style="position: relative;" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot; display=&quot;block&quot;&gt;&lt;mi&gt;L&lt;/mi&gt;&lt;mi&gt;o&lt;/mi&gt;&lt;mi&gt;o&lt;/mi&gt;&lt;mi&gt;k&lt;/mi&gt;&lt;mi&gt;A&lt;/mi&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mrow&gt;&lt;mo&gt;[&lt;/mo&gt;&lt;mtable rowspacing=&quot;4pt&quot; columnspacing=&quot;1em&quot;&gt;&lt;mtr&gt;&lt;mtd&gt;&lt;mstyle mathcolor=&quot;red&quot;&gt;&lt;msub&gt;&lt;mi&gt;R&lt;/mi&gt;&lt;mi&gt;x&lt;/mi&gt;&lt;/msub&gt;&lt;/mstyle&gt;&lt;/mtd&gt;&lt;mtd&gt;&lt;mstyle mathcolor=&quot;red&quot;&gt;&lt;msub&gt;&lt;mi&gt;R&lt;/mi&gt;&lt;mi&gt;y&lt;/mi&gt;&lt;/msub&gt;&lt;/mstyle&gt;&lt;/mtd&gt;&lt;mtd&gt;&lt;mstyle mathcolor=&quot;red&quot;&gt;&lt;msub&gt;&lt;mi&gt;R&lt;/mi&gt;&lt;mi&gt;z&lt;/mi&gt;&lt;/msub&gt;&lt;/mstyle&gt;&lt;/mtd&gt;&lt;mtd&gt;&lt;mn&gt;0&lt;/mn&gt;&lt;/mtd&gt;&lt;/mtr&gt;&lt;mtr&gt;&lt;mtd&gt;&lt;mstyle mathcolor=&quot;green&quot;&gt;&lt;msub&gt;&lt;mi&gt;U&lt;/mi&gt;&lt;mi&gt;x&lt;/mi&gt;&lt;/msub&gt;&lt;/mstyle&gt;&lt;/mtd&gt;&lt;mtd&gt;&lt;mstyle mathcolor=&quot;green&quot;&gt;&lt;msub&gt;&lt;mi&gt;U&lt;/mi&gt;&lt;mi&gt;y&lt;/mi&gt;&lt;/msub&gt;&lt;/mstyle&gt;&lt;/mtd&gt;&lt;mtd&gt;&lt;mstyle mathcolor=&quot;green&quot;&gt;&lt;msub&gt;&lt;mi&gt;U&lt;/mi&gt;&lt;mi&gt;z&lt;/mi&gt;&lt;/msub&gt;&lt;/mstyle&gt;&lt;/mtd&gt;&lt;mtd&gt;&lt;mn&gt;0&lt;/mn&gt;&lt;/mtd&gt;&lt;/mtr&gt;&lt;mtr&gt;&lt;mtd&gt;&lt;mstyle mathcolor=&quot;blue&quot;&gt;&lt;msub&gt;&lt;mi&gt;D&lt;/mi&gt;&lt;mi&gt;x&lt;/mi&gt;&lt;/msub&gt;&lt;/mstyle&gt;&lt;/mtd&gt;&lt;mtd&gt;&lt;mstyle mathcolor=&quot;blue&quot;&gt;&lt;msub&gt;&lt;mi&gt;D&lt;/mi&gt;&lt;mi&gt;y&lt;/mi&gt;&lt;/msub&gt;&lt;/mstyle&gt;&lt;/mtd&gt;&lt;mtd&gt;&lt;mstyle mathcolor=&quot;blue&quot;&gt;&lt;msub&gt;&lt;mi&gt;D&lt;/mi&gt;&lt;mi&gt;z&lt;/mi&gt;&lt;/msub&gt;&lt;/mstyle&gt;&lt;/mtd&gt;&lt;mtd&gt;&lt;mn&gt;0&lt;/mn&gt;&lt;/mtd&gt;&lt;/mtr&gt;&lt;mtr&gt;&lt;mtd&gt;&lt;mn&gt;0&lt;/mn&gt;&lt;/mtd&gt;&lt;mtd&gt;&lt;mn&gt;0&lt;/mn&gt;&lt;/mtd&gt;&lt;mtd&gt;&lt;mn&gt;0&lt;/mn&gt;&lt;/mtd&gt;&lt;mtd&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/mtd&gt;&lt;/mtr&gt;&lt;/mtable&gt;&lt;mo&gt;]&lt;/mo&gt;&lt;/mrow&gt;&lt;mo&gt;&amp;#x2217;&lt;/mo&gt;&lt;mrow&gt;&lt;mo&gt;[&lt;/mo&gt;&lt;mtable rowspacing=&quot;4pt&quot; columnspacing=&quot;1em&quot;&gt;&lt;mtr&gt;&lt;mtd&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/mtd&gt;&lt;mtd&gt;&lt;mn&gt;0&lt;/mn&gt;&lt;/mtd&gt;&lt;mtd&gt;&lt;mn&gt;0&lt;/mn&gt;&lt;/mtd&gt;&lt;mtd&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mstyle mathcolor=&quot;purple&quot;&gt;&lt;msub&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mi&gt;x&lt;/mi&gt;&lt;/msub&gt;&lt;/mstyle&gt;&lt;/mtd&gt;&lt;/mtr&gt;&lt;mtr&gt;&lt;mtd&gt;&lt;mn&gt;0&lt;/mn&gt;&lt;/mtd&gt;&lt;mtd&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/mtd&gt;&lt;mtd&gt;&lt;mn&gt;0&lt;/mn&gt;&lt;/mtd&gt;&lt;mtd&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mstyle mathcolor=&quot;purple&quot;&gt;&lt;msub&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mi&gt;y&lt;/mi&gt;&lt;/msub&gt;&lt;/mstyle&gt;&lt;/mtd&gt;&lt;/mtr&gt;&lt;mtr&gt;&lt;mtd&gt;&lt;mn&gt;0&lt;/mn&gt;&lt;/mtd&gt;&lt;mtd&gt;&lt;mn&gt;0&lt;/mn&gt;&lt;/mtd&gt;&lt;mtd&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/mtd&gt;&lt;mtd&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mstyle mathcolor=&quot;purple&quot;&gt;&lt;msub&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mi&gt;z&lt;/mi&gt;&lt;/msub&gt;&lt;/mstyle&gt;&lt;/mtd&gt;&lt;/mtr&gt;&lt;mtr&gt;&lt;mtd&gt;&lt;mn&gt;0&lt;/mn&gt;&lt;/mtd&gt;&lt;mtd&gt;&lt;mn&gt;0&lt;/mn&gt;&lt;/mtd&gt;&lt;mtd&gt;&lt;mn&gt;0&lt;/mn&gt;&lt;/mtd&gt;&lt;mtd&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/mtd&gt;&lt;/mtr&gt;&lt;/mtable&gt;&lt;mo&gt;]&lt;/mo&gt;&lt;/mrow&gt;&lt;/math&gt;" role="presentation"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-1" role="math" style="width: 26.08em; display: inline-block;"><span style="display: inline-block; position: relative; width: 22.47em; height: 0px; font-size: 116%;"><span style="position: absolute; clip: rect(2.104em, 1022.15em, 7.923em, -999.997em); top: -5.277em; left: 0.003em;"><span class="mrow" id="MathJax-Span-2"><span class="mi" id="MathJax-Span-3" style="font-family: MathJax_Math-italic;">L</span><span class="mi" id="MathJax-Span-4" style="font-family: MathJax_Math-italic;">o</span><span class="mi" id="MathJax-Span-5" style="font-family: MathJax_Math-italic;">o</span><span class="mi" id="MathJax-Span-6" style="font-family: MathJax_Math-italic;">k</span><span class="mi" id="MathJax-Span-7" style="font-family: MathJax_Math-italic;">A</span><span class="mi" id="MathJax-Span-8" style="font-family: MathJax_Math-italic;">t</span><span class="mo" id="MathJax-Span-9" style="font-family: MathJax_Main; padding-left: 0.272em;">=</span><span class="mrow" id="MathJax-Span-10" style="padding-left: 0.272em;"><span class="mo" id="MathJax-Span-11" style="vertical-align: 3.02em;"><span style="display: inline-block; position: relative; width: 0.649em; height: 0px;"><span style="position: absolute; font-family: MathJax_Size4; top: -2.853em; left: 0.003em;">⎡<span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; font-family: MathJax_Size4; top: 0.865em; left: 0.003em;">⎣<span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="font-family: MathJax_Size4; position: absolute; top: -1.668em; left: 0.003em;">⎢<span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="font-family: MathJax_Size4; position: absolute; top: -1.183em; left: 0.003em;">⎢<span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="font-family: MathJax_Size4; position: absolute; top: -0.698em; left: 0.003em;">⎢<span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="font-family: MathJax_Size4; position: absolute; top: -0.213em; left: 0.003em;">⎢<span style="display: inline-block; width: 0px; height: 3.99em;"></span></span></span></span><span class="mtable" id="MathJax-Span-12" style="padding-right: 0.164em; padding-left: 0.164em;"><span style="display: inline-block; position: relative; width: 7.276em; height: 0px;"><span style="position: absolute; clip: rect(3.182em, 1001.3em, 8.677em, -999.997em); top: -6.193em; left: 0.003em;"><span style="display: inline-block; position: relative; width: 1.296em; height: 0px;"><span style="position: absolute; clip: rect(3.128em, 1001.24em, 4.313em, -999.997em); top: -6.193em; left: 50%; margin-left: -0.59em;"><span class="mtd" id="MathJax-Span-13"><span class="mrow" id="MathJax-Span-14"><span class="mstyle" id="MathJax-Span-15" style="color: red;"><span class="mrow" id="MathJax-Span-16" style="color: red;"><span class="msubsup" id="MathJax-Span-17" style="color: red;"><span style="display: inline-block; position: relative; width: 1.242em; height: 0px;"><span style="position: absolute; clip: rect(3.128em, 1000.76em, 4.151em, -999.997em); top: -3.984em; left: 0.003em;"><span class="mi" id="MathJax-Span-18" style="font-family: MathJax_Math-italic; color: red;">R</span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; top: -3.823em; left: 0.757em;"><span class="mi" id="MathJax-Span-19" style="font-size: 70.7%; font-family: MathJax_Math-italic; color: red;">x</span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span></span></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; clip: rect(3.128em, 1001.19em, 4.313em, -999.997em); top: -4.685em; left: 50%; margin-left: -0.59em;"><span class="mtd" id="MathJax-Span-37"><span class="mrow" id="MathJax-Span-38"><span class="mstyle" id="MathJax-Span-39" style="color: green;"><span class="mrow" id="MathJax-Span-40" style="color: green;"><span class="msubsup" id="MathJax-Span-41" style="color: green;"><span style="display: inline-block; position: relative; width: 1.188em; height: 0px;"><span style="position: absolute; clip: rect(3.128em, 1000.76em, 4.151em, -999.997em); top: -3.984em; left: 0.003em;"><span class="mi" id="MathJax-Span-42" style="font-family: MathJax_Math-italic; color: green;">U<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.11em;"></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; top: -3.823em; left: 0.703em;"><span class="mi" id="MathJax-Span-43" style="font-size: 70.7%; font-family: MathJax_Math-italic; color: green;">x</span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span></span></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; clip: rect(3.128em, 1001.3em, 4.313em, -999.997em); top: -3.176em; left: 50%; margin-left: -0.644em;"><span class="mtd" id="MathJax-Span-61"><span class="mrow" id="MathJax-Span-62"><span class="mstyle" id="MathJax-Span-63" style="color: blue;"><span class="mrow" id="MathJax-Span-64" style="color: blue;"><span class="msubsup" id="MathJax-Span-65" style="color: blue;"><span style="display: inline-block; position: relative; width: 1.296em; height: 0px;"><span style="position: absolute; clip: rect(3.128em, 1000.81em, 4.151em, -999.997em); top: -3.984em; left: 0.003em;"><span class="mi" id="MathJax-Span-66" style="font-family: MathJax_Math-italic; color: blue;">D</span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; top: -3.823em; left: 0.811em;"><span class="mi" id="MathJax-Span-67" style="font-size: 70.7%; font-family: MathJax_Math-italic; color: blue;">x</span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span></span></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; clip: rect(3.182em, 1000.49em, 4.151em, -999.997em); top: -1.668em; left: 50%; margin-left: -0.267em;"><span class="mtd" id="MathJax-Span-85"><span class="mrow" id="MathJax-Span-86"><span class="mn" id="MathJax-Span-87" style="font-family: MathJax_Main;">0</span></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span></span><span style="display: inline-block; width: 0px; height: 6.199em;"></span></span><span style="position: absolute; clip: rect(3.182em, 1001.24em, 8.677em, -999.997em); top: -6.193em; left: 2.32em;"><span style="display: inline-block; position: relative; width: 1.242em; height: 0px;"><span style="position: absolute; clip: rect(3.128em, 1001.19em, 4.421em, -999.997em); top: -6.193em; left: 50%; margin-left: -0.59em;"><span class="mtd" id="MathJax-Span-20"><span class="mrow" id="MathJax-Span-21"><span class="mstyle" id="MathJax-Span-22" style="color: red;"><span class="mrow" id="MathJax-Span-23" style="color: red;"><span class="msubsup" id="MathJax-Span-24" style="color: red;"><span style="display: inline-block; position: relative; width: 1.188em; height: 0px;"><span style="position: absolute; clip: rect(3.128em, 1000.76em, 4.151em, -999.997em); top: -3.984em; left: 0.003em;"><span class="mi" id="MathJax-Span-25" style="font-family: MathJax_Math-italic; color: red;">R</span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; top: -3.823em; left: 0.757em;"><span class="mi" id="MathJax-Span-26" style="font-size: 70.7%; font-family: MathJax_Math-italic; color: red;">y<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.003em;"></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span></span></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; clip: rect(3.128em, 1001.13em, 4.421em, -999.997em); top: -4.685em; left: 50%; margin-left: -0.536em;"><span class="mtd" id="MathJax-Span-44"><span class="mrow" id="MathJax-Span-45"><span class="mstyle" id="MathJax-Span-46" style="color: green;"><span class="mrow" id="MathJax-Span-47" style="color: green;"><span class="msubsup" id="MathJax-Span-48" style="color: green;"><span style="display: inline-block; position: relative; width: 1.134em; height: 0px;"><span style="position: absolute; clip: rect(3.128em, 1000.76em, 4.151em, -999.997em); top: -3.984em; left: 0.003em;"><span class="mi" id="MathJax-Span-49" style="font-family: MathJax_Math-italic; color: green;">U<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.11em;"></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; top: -3.823em; left: 0.703em;"><span class="mi" id="MathJax-Span-50" style="font-size: 70.7%; font-family: MathJax_Math-italic; color: green;">y<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.003em;"></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span></span></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; clip: rect(3.128em, 1001.24em, 4.421em, -999.997em); top: -3.176em; left: 50%; margin-left: -0.644em;"><span class="mtd" id="MathJax-Span-68"><span class="mrow" id="MathJax-Span-69"><span class="mstyle" id="MathJax-Span-70" style="color: blue;"><span class="mrow" id="MathJax-Span-71" style="color: blue;"><span class="msubsup" id="MathJax-Span-72" style="color: blue;"><span style="display: inline-block; position: relative; width: 1.242em; height: 0px;"><span style="position: absolute; clip: rect(3.128em, 1000.81em, 4.151em, -999.997em); top: -3.984em; left: 0.003em;"><span class="mi" id="MathJax-Span-73" style="font-family: MathJax_Math-italic; color: blue;">D</span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; top: -3.823em; left: 0.811em;"><span class="mi" id="MathJax-Span-74" style="font-size: 70.7%; font-family: MathJax_Math-italic; color: blue;">y<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.003em;"></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span></span></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; clip: rect(3.182em, 1000.49em, 4.151em, -999.997em); top: -1.668em; left: 50%; margin-left: -0.267em;"><span class="mtd" id="MathJax-Span-88"><span class="mrow" id="MathJax-Span-89"><span class="mn" id="MathJax-Span-90" style="font-family: MathJax_Main;">0</span></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span></span><span style="display: inline-block; width: 0px; height: 6.199em;"></span></span><span style="position: absolute; clip: rect(3.182em, 1001.24em, 8.677em, -999.997em); top: -6.193em; left: 4.582em;"><span style="display: inline-block; position: relative; width: 1.242em; height: 0px;"><span style="position: absolute; clip: rect(3.128em, 1001.19em, 4.313em, -999.997em); top: -6.193em; left: 50%; margin-left: -0.59em;"><span class="mtd" id="MathJax-Span-27"><span class="mrow" id="MathJax-Span-28"><span class="mstyle" id="MathJax-Span-29" style="color: red;"><span class="mrow" id="MathJax-Span-30" style="color: red;"><span class="msubsup" id="MathJax-Span-31" style="color: red;"><span style="display: inline-block; position: relative; width: 1.188em; height: 0px;"><span style="position: absolute; clip: rect(3.128em, 1000.76em, 4.151em, -999.997em); top: -3.984em; left: 0.003em;"><span class="mi" id="MathJax-Span-32" style="font-family: MathJax_Math-italic; color: red;">R</span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; top: -3.823em; left: 0.757em;"><span class="mi" id="MathJax-Span-33" style="font-size: 70.7%; font-family: MathJax_Math-italic; color: red;">z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.003em;"></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span></span></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; clip: rect(3.128em, 1001.08em, 4.313em, -999.997em); top: -4.685em; left: 50%; margin-left: -0.536em;"><span class="mtd" id="MathJax-Span-51"><span class="mrow" id="MathJax-Span-52"><span class="mstyle" id="MathJax-Span-53" style="color: green;"><span class="mrow" id="MathJax-Span-54" style="color: green;"><span class="msubsup" id="MathJax-Span-55" style="color: green;"><span style="display: inline-block; position: relative; width: 1.08em; height: 0px;"><span style="position: absolute; clip: rect(3.128em, 1000.76em, 4.151em, -999.997em); top: -3.984em; left: 0.003em;"><span class="mi" id="MathJax-Span-56" style="font-family: MathJax_Math-italic; color: green;">U<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.11em;"></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; top: -3.823em; left: 0.703em;"><span class="mi" id="MathJax-Span-57" style="font-size: 70.7%; font-family: MathJax_Math-italic; color: green;">z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.003em;"></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span></span></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; clip: rect(3.128em, 1001.24em, 4.313em, -999.997em); top: -3.176em; left: 50%; margin-left: -0.59em;"><span class="mtd" id="MathJax-Span-75"><span class="mrow" id="MathJax-Span-76"><span class="mstyle" id="MathJax-Span-77" style="color: blue;"><span class="mrow" id="MathJax-Span-78" style="color: blue;"><span class="msubsup" id="MathJax-Span-79" style="color: blue;"><span style="display: inline-block; position: relative; width: 1.242em; height: 0px;"><span style="position: absolute; clip: rect(3.128em, 1000.81em, 4.151em, -999.997em); top: -3.984em; left: 0.003em;"><span class="mi" id="MathJax-Span-80" style="font-family: MathJax_Math-italic; color: blue;">D</span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; top: -3.823em; left: 0.811em;"><span class="mi" id="MathJax-Span-81" style="font-size: 70.7%; font-family: MathJax_Math-italic; color: blue;">z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.003em;"></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span></span></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; clip: rect(3.182em, 1000.49em, 4.151em, -999.997em); top: -1.668em; left: 50%; margin-left: -0.267em;"><span class="mtd" id="MathJax-Span-91"><span class="mrow" id="MathJax-Span-92"><span class="mn" id="MathJax-Span-93" style="font-family: MathJax_Main;">0</span></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span></span><span style="display: inline-block; width: 0px; height: 6.199em;"></span></span><span style="position: absolute; clip: rect(3.128em, 1000.49em, 8.623em, -999.997em); top: -6.14em; left: 6.791em;"><span style="display: inline-block; position: relative; width: 0.488em; height: 0px;"><span style="position: absolute; clip: rect(3.182em, 1000.49em, 4.151em, -999.997em); top: -6.193em; left: 50%; margin-left: -0.267em;"><span class="mtd" id="MathJax-Span-34"><span class="mrow" id="MathJax-Span-35"><span class="mn" id="MathJax-Span-36" style="font-family: MathJax_Main;">0</span></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; clip: rect(3.182em, 1000.49em, 4.151em, -999.997em); top: -4.685em; left: 50%; margin-left: -0.267em;"><span class="mtd" id="MathJax-Span-58"><span class="mrow" id="MathJax-Span-59"><span class="mn" id="MathJax-Span-60" style="font-family: MathJax_Main;">0</span></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; clip: rect(3.182em, 1000.49em, 4.151em, -999.997em); top: -3.176em; left: 50%; margin-left: -0.267em;"><span class="mtd" id="MathJax-Span-82"><span class="mrow" id="MathJax-Span-83"><span class="mn" id="MathJax-Span-84" style="font-family: MathJax_Main;">0</span></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; clip: rect(3.182em, 1000.43em, 4.151em, -999.997em); top: -1.668em; left: 50%; margin-left: -0.267em;"><span class="mtd" id="MathJax-Span-94"><span class="mrow" id="MathJax-Span-95"><span class="mn" id="MathJax-Span-96" style="font-family: MathJax_Main;">1</span></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span></span><span style="display: inline-block; width: 0px; height: 6.145em;"></span></span></span></span><span class="mo" id="MathJax-Span-97" style="vertical-align: 3.02em;"><span style="display: inline-block; position: relative; width: 0.649em; height: 0px;"><span style="position: absolute; font-family: MathJax_Size4; top: -2.853em; left: 0.003em;">⎤<span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; font-family: MathJax_Size4; top: 0.865em; left: 0.003em;">⎦<span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="font-family: MathJax_Size4; position: absolute; top: -1.668em; left: 0.003em;">⎥<span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="font-family: MathJax_Size4; position: absolute; top: -1.183em; left: 0.003em;">⎥<span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="font-family: MathJax_Size4; position: absolute; top: -0.698em; left: 0.003em;">⎥<span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="font-family: MathJax_Size4; position: absolute; top: -0.213em; left: 0.003em;">⎥<span style="display: inline-block; width: 0px; height: 3.99em;"></span></span></span></span></span><span class="mo" id="MathJax-Span-98" style="font-family: MathJax_Main; padding-left: 0.218em;">∗</span><span class="mrow" id="MathJax-Span-99" style="padding-left: 0.218em;"><span class="mo" id="MathJax-Span-100" style="vertical-align: 2.912em;"><span style="display: inline-block; position: relative; width: 0.649em; height: 0px;"><span style="position: absolute; font-family: MathJax_Size4; top: -2.853em; left: 0.003em;">⎡<span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; font-family: MathJax_Size4; top: 0.649em; left: 0.003em;">⎣<span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="font-family: MathJax_Size4; position: absolute; top: -1.721em; left: 0.003em;">⎢<span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="font-family: MathJax_Size4; position: absolute; top: -1.29em; left: 0.003em;">⎢<span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="font-family: MathJax_Size4; position: absolute; top: -0.805em; left: 0.003em;">⎢<span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="font-family: MathJax_Size4; position: absolute; top: -0.321em; left: 0.003em;">⎢<span style="display: inline-block; width: 0px; height: 3.99em;"></span></span></span></span><span class="mtable" id="MathJax-Span-101" style="padding-right: 0.164em; padding-left: 0.164em;"><span style="display: inline-block; position: relative; width: 6.414em; height: 0px;"><span style="position: absolute; clip: rect(3.074em, 1000.49em, 8.354em, -999.997em); top: -5.978em; left: 0.003em;"><span style="display: inline-block; position: relative; width: 0.488em; height: 0px;"><span style="position: absolute; clip: rect(3.182em, 1000.43em, 4.151em, -999.997em); top: -6.086em; left: 50%; margin-left: -0.267em;"><span class="mtd" id="MathJax-Span-102"><span class="mrow" id="MathJax-Span-103"><span class="mn" id="MathJax-Span-104" style="font-family: MathJax_Main;">1</span></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; clip: rect(3.182em, 1000.49em, 4.151em, -999.997em); top: -4.685em; left: 50%; margin-left: -0.267em;"><span class="mtd" id="MathJax-Span-119"><span class="mrow" id="MathJax-Span-120"><span class="mn" id="MathJax-Span-121" style="font-family: MathJax_Main;">0</span></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; clip: rect(3.182em, 1000.49em, 4.151em, -999.997em); top: -3.176em; left: 50%; margin-left: -0.267em;"><span class="mtd" id="MathJax-Span-136"><span class="mrow" id="MathJax-Span-137"><span class="mn" id="MathJax-Span-138" style="font-family: MathJax_Main;">0</span></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; clip: rect(3.182em, 1000.49em, 4.151em, -999.997em); top: -1.775em; left: 50%; margin-left: -0.267em;"><span class="mtd" id="MathJax-Span-153"><span class="mrow" id="MathJax-Span-154"><span class="mn" id="MathJax-Span-155" style="font-family: MathJax_Main;">0</span></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span></span><span style="display: inline-block; width: 0px; height: 5.983em;"></span></span><span style="position: absolute; clip: rect(3.074em, 1000.49em, 8.354em, -999.997em); top: -5.978em; left: 1.511em;"><span style="display: inline-block; position: relative; width: 0.488em; height: 0px;"><span style="position: absolute; clip: rect(3.182em, 1000.49em, 4.151em, -999.997em); top: -6.086em; left: 50%; margin-left: -0.267em;"><span class="mtd" id="MathJax-Span-105"><span class="mrow" id="MathJax-Span-106"><span class="mn" id="MathJax-Span-107" style="font-family: MathJax_Main;">0</span></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; clip: rect(3.182em, 1000.43em, 4.151em, -999.997em); top: -4.685em; left: 50%; margin-left: -0.267em;"><span class="mtd" id="MathJax-Span-122"><span class="mrow" id="MathJax-Span-123"><span class="mn" id="MathJax-Span-124" style="font-family: MathJax_Main;">1</span></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; clip: rect(3.182em, 1000.49em, 4.151em, -999.997em); top: -3.176em; left: 50%; margin-left: -0.267em;"><span class="mtd" id="MathJax-Span-139"><span class="mrow" id="MathJax-Span-140"><span class="mn" id="MathJax-Span-141" style="font-family: MathJax_Main;">0</span></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; clip: rect(3.182em, 1000.49em, 4.151em, -999.997em); top: -1.775em; left: 50%; margin-left: -0.267em;"><span class="mtd" id="MathJax-Span-156"><span class="mrow" id="MathJax-Span-157"><span class="mn" id="MathJax-Span-158" style="font-family: MathJax_Main;">0</span></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span></span><span style="display: inline-block; width: 0px; height: 5.983em;"></span></span><span style="position: absolute; clip: rect(3.074em, 1000.49em, 8.354em, -999.997em); top: -5.978em; left: 3.02em;"><span style="display: inline-block; position: relative; width: 0.488em; height: 0px;"><span style="position: absolute; clip: rect(3.182em, 1000.49em, 4.151em, -999.997em); top: -6.086em; left: 50%; margin-left: -0.267em;"><span class="mtd" id="MathJax-Span-108"><span class="mrow" id="MathJax-Span-109"><span class="mn" id="MathJax-Span-110" style="font-family: MathJax_Main;">0</span></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; clip: rect(3.182em, 1000.49em, 4.151em, -999.997em); top: -4.685em; left: 50%; margin-left: -0.267em;"><span class="mtd" id="MathJax-Span-125"><span class="mrow" id="MathJax-Span-126"><span class="mn" id="MathJax-Span-127" style="font-family: MathJax_Main;">0</span></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; clip: rect(3.182em, 1000.43em, 4.151em, -999.997em); top: -3.176em; left: 50%; margin-left: -0.267em;"><span class="mtd" id="MathJax-Span-142"><span class="mrow" id="MathJax-Span-143"><span class="mn" id="MathJax-Span-144" style="font-family: MathJax_Main;">1</span></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; clip: rect(3.182em, 1000.49em, 4.151em, -999.997em); top: -1.775em; left: 50%; margin-left: -0.267em;"><span class="mtd" id="MathJax-Span-159"><span class="mrow" id="MathJax-Span-160"><span class="mn" id="MathJax-Span-161" style="font-family: MathJax_Main;">0</span></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span></span><span style="display: inline-block; width: 0px; height: 5.983em;"></span></span><span style="position: absolute; clip: rect(3.02em, 1001.89em, 8.354em, -999.997em); top: -5.978em; left: 4.529em;"><span style="display: inline-block; position: relative; width: 1.888em; height: 0px;"><span style="position: absolute; clip: rect(3.128em, 1001.89em, 4.313em, -999.997em); top: -6.086em; left: 50%; margin-left: -0.967em;"><span class="mtd" id="MathJax-Span-111"><span class="mrow" id="MathJax-Span-112"><span class="mo" id="MathJax-Span-113" style="font-family: MathJax_Main;">−</span><span class="mstyle" id="MathJax-Span-114" style="color: purple;"><span class="mrow" id="MathJax-Span-115" style="color: purple;"><span class="msubsup" id="MathJax-Span-116" style="color: purple;"><span style="display: inline-block; position: relative; width: 1.134em; height: 0px;"><span style="position: absolute; clip: rect(3.128em, 1000.76em, 4.151em, -999.997em); top: -3.984em; left: 0.003em;"><span class="mi" id="MathJax-Span-117" style="font-family: MathJax_Math-italic; color: purple;">P<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.11em;"></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; top: -3.823em; left: 0.649em;"><span class="mi" id="MathJax-Span-118" style="font-size: 70.7%; font-family: MathJax_Math-italic; color: purple;">x</span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span></span></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; clip: rect(3.128em, 1001.84em, 4.421em, -999.997em); top: -4.685em; left: 50%; margin-left: -0.913em;"><span class="mtd" id="MathJax-Span-128"><span class="mrow" id="MathJax-Span-129"><span class="mo" id="MathJax-Span-130" style="font-family: MathJax_Main;">−</span><span class="mstyle" id="MathJax-Span-131" style="color: purple;"><span class="mrow" id="MathJax-Span-132" style="color: purple;"><span class="msubsup" id="MathJax-Span-133" style="color: purple;"><span style="display: inline-block; position: relative; width: 1.08em; height: 0px;"><span style="position: absolute; clip: rect(3.128em, 1000.76em, 4.151em, -999.997em); top: -3.984em; left: 0.003em;"><span class="mi" id="MathJax-Span-134" style="font-family: MathJax_Math-italic; color: purple;">P<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.11em;"></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; top: -3.823em; left: 0.649em;"><span class="mi" id="MathJax-Span-135" style="font-size: 70.7%; font-family: MathJax_Math-italic; color: purple;">y<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.003em;"></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span></span></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; clip: rect(3.128em, 1001.84em, 4.313em, -999.997em); top: -3.176em; left: 50%; margin-left: -0.913em;"><span class="mtd" id="MathJax-Span-145"><span class="mrow" id="MathJax-Span-146"><span class="mo" id="MathJax-Span-147" style="font-family: MathJax_Main;">−</span><span class="mstyle" id="MathJax-Span-148" style="color: purple;"><span class="mrow" id="MathJax-Span-149" style="color: purple;"><span class="msubsup" id="MathJax-Span-150" style="color: purple;"><span style="display: inline-block; position: relative; width: 1.026em; height: 0px;"><span style="position: absolute; clip: rect(3.128em, 1000.76em, 4.151em, -999.997em); top: -3.984em; left: 0.003em;"><span class="mi" id="MathJax-Span-151" style="font-family: MathJax_Math-italic; color: purple;">P<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.11em;"></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; top: -3.823em; left: 0.649em;"><span class="mi" id="MathJax-Span-152" style="font-size: 70.7%; font-family: MathJax_Math-italic; color: purple;">z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.003em;"></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span></span></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; clip: rect(3.182em, 1000.43em, 4.151em, -999.997em); top: -1.775em; left: 50%; margin-left: -0.267em;"><span class="mtd" id="MathJax-Span-162"><span class="mrow" id="MathJax-Span-163"><span class="mn" id="MathJax-Span-164" style="font-family: MathJax_Main;">1</span></span></span><span style="display: inline-block; width: 0px; height: 3.99em;"></span></span></span><span style="display: inline-block; width: 0px; height: 5.983em;"></span></span></span></span><span class="mo" id="MathJax-Span-165" style="vertical-align: 2.912em;"><span style="display: inline-block; position: relative; width: 0.649em; height: 0px;"><span style="position: absolute; font-family: MathJax_Size4; top: -2.853em; left: 0.003em;">⎤<span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="position: absolute; font-family: MathJax_Size4; top: 0.649em; left: 0.003em;">⎦<span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="font-family: MathJax_Size4; position: absolute; top: -1.721em; left: 0.003em;">⎥<span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="font-family: MathJax_Size4; position: absolute; top: -1.29em; left: 0.003em;">⎥<span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="font-family: MathJax_Size4; position: absolute; top: -0.805em; left: 0.003em;">⎥<span style="display: inline-block; width: 0px; height: 3.99em;"></span></span><span style="font-family: MathJax_Size4; position: absolute; top: -0.321em; left: 0.003em;">⎥<span style="display: inline-block; width: 0px; height: 3.99em;"></span></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 5.283em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -2.934em; border-left: 0px solid; width: 0px; height: 6.503em;"></span></span></nobr><span class="MJX_Assistive_MathML MJX_Assistive_MathML_Block" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>L</mi><mi>o</mi><mi>o</mi><mi>k</mi><mi>A</mi><mi>t</mi><mo>=</mo><mrow><mo>[</mo><mtable rowspacing="4pt" columnspacing="1em"><mtr><mtd><mstyle mathcolor="red"><msub><mi>R</mi><mi>x</mi></msub></mstyle></mtd><mtd><mstyle mathcolor="red"><msub><mi>R</mi><mi>y</mi></msub></mstyle></mtd><mtd><mstyle mathcolor="red"><msub><mi>R</mi><mi>z</mi></msub></mstyle></mtd><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mstyle mathcolor="green"><msub><mi>U</mi><mi>x</mi></msub></mstyle></mtd><mtd><mstyle mathcolor="green"><msub><mi>U</mi><mi>y</mi></msub></mstyle></mtd><mtd><mstyle mathcolor="green"><msub><mi>U</mi><mi>z</mi></msub></mstyle></mtd><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mstyle mathcolor="blue"><msub><mi>D</mi><mi>x</mi></msub></mstyle></mtd><mtd><mstyle mathcolor="blue"><msub><mi>D</mi><mi>y</mi></msub></mstyle></mtd><mtd><mstyle mathcolor="blue"><msub><mi>D</mi><mi>z</mi></msub></mstyle></mtd><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>1</mn></mtd></mtr></mtable><mo>]</mo></mrow><mo>∗</mo><mrow><mo>[</mo><mtable rowspacing="4pt" columnspacing="1em"><mtr><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd><mtd><mo>−</mo><mstyle mathcolor="purple"><msub><mi>P</mi><mi>x</mi></msub></mstyle></mtd></mtr><mtr><mtd><mn>0</mn></mtd><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd><mtd><mo>−</mo><mstyle mathcolor="purple"><msub><mi>P</mi><mi>y</mi></msub></mstyle></mtd></mtr><mtr><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>1</mn></mtd><mtd><mo>−</mo><mstyle mathcolor="purple"><msub><mi>P</mi><mi>z</mi></msub></mstyle></mtd></mtr><mtr><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>1</mn></mtd></mtr></mtable><mo>]</mo></mrow></math></span></span></div><script type="math/tex; mode=display" id="MathJax-Element-1">LookAt = \begin{bmatrix} \color{red}{R_x} & \color{red}{R_y} & \color{red}{R_z} & 0 \\ \color{green}{U_x} & \color{green}{U_y} & \color{green}{U_z} & 0 \\ \color{blue}{D_x} & \color{blue}{D_y} & \color{blue}{D_z} & 0 \\ 0 & 0 & 0  & 1 \end{bmatrix} * \begin{bmatrix} 1 & 0 & 0 & -\color{purple}{P_x} \\ 0 & 1 & 0 & -\color{purple}{P_y} \\ 0 & 0 & 1 & -\color{purple}{P_z} \\ 0 & 0 & 0  & 1 \end{bmatrix} </script>
+  
+  Where <span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax" id="MathJax-Element-2-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mstyle mathcolor=&quot;red&quot;&gt;&lt;mi&gt;R&lt;/mi&gt;&lt;/mstyle&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-166" role="math" style="width: 0.919em; display: inline-block;"><span style="display: inline-block; position: relative; width: 0.757em; height: 0px; font-size: 116%;"><span style="position: absolute; clip: rect(1.404em, 1000.76em, 2.427em, -999.997em); top: -2.26em; left: 0.003em;"><span class="mrow" id="MathJax-Span-167"><span class="mstyle" id="MathJax-Span-168" style="color: red;"><span class="mrow" id="MathJax-Span-169" style="color: red;"><span class="mi" id="MathJax-Span-170" style="font-family: MathJax_Math-italic; color: red;">R</span></span></span></span><span style="display: inline-block; width: 0px; height: 2.266em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.059em; border-left: 0px solid; width: 0px; height: 0.941em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mstyle mathcolor="red"><mi>R</mi></mstyle></math></span></span><script type="math/tex" id="MathJax-Element-2">\color{red}R</script> is the right vector, <span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax" id="MathJax-Element-3-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mstyle mathcolor=&quot;green&quot;&gt;&lt;mi&gt;U&lt;/mi&gt;&lt;/mstyle&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-171" role="math" style="width: 0.973em; display: inline-block;"><span style="display: inline-block; position: relative; width: 0.811em; height: 0px; font-size: 116%;"><span style="position: absolute; clip: rect(1.404em, 1000.81em, 2.427em, -999.997em); top: -2.26em; left: 0.003em;"><span class="mrow" id="MathJax-Span-172"><span class="mstyle" id="MathJax-Span-173" style="color: green;"><span class="mrow" id="MathJax-Span-174" style="color: green;"><span class="mi" id="MathJax-Span-175" style="font-family: MathJax_Math-italic; color: green;">U<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.11em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.266em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.059em; border-left: 0px solid; width: 0px; height: 0.941em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mstyle mathcolor="green"><mi>U</mi></mstyle></math></span></span><script type="math/tex" id="MathJax-Element-3">\color{green}U</script> is the up vector, <span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax" id="MathJax-Element-4-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mstyle mathcolor=&quot;blue&quot;&gt;&lt;mi&gt;D&lt;/mi&gt;&lt;/mstyle&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-176" role="math" style="width: 0.973em; display: inline-block;"><span style="display: inline-block; position: relative; width: 0.811em; height: 0px; font-size: 116%;"><span style="position: absolute; clip: rect(1.404em, 1000.81em, 2.427em, -999.997em); top: -2.26em; left: 0.003em;"><span class="mrow" id="MathJax-Span-177"><span class="mstyle" id="MathJax-Span-178" style="color: blue;"><span class="mrow" id="MathJax-Span-179" style="color: blue;"><span class="mi" id="MathJax-Span-180" style="font-family: MathJax_Math-italic; color: blue;">D</span></span></span></span><span style="display: inline-block; width: 0px; height: 2.266em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.059em; border-left: 0px solid; width: 0px; height: 0.941em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mstyle mathcolor="blue"><mi>D</mi></mstyle></math></span></span><script type="math/tex" id="MathJax-Element-4">\color{blue}D</script> is the direction vector and <span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax" id="MathJax-Element-5-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mstyle mathcolor=&quot;purple&quot;&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;/mstyle&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-181" role="math" style="width: 0.919em; display: inline-block;"><span style="display: inline-block; position: relative; width: 0.757em; height: 0px; font-size: 116%;"><span style="position: absolute; clip: rect(1.404em, 1000.76em, 2.427em, -999.997em); top: -2.26em; left: 0.003em;"><span class="mrow" id="MathJax-Span-182"><span class="mstyle" id="MathJax-Span-183" style="color: purple;"><span class="mrow" id="MathJax-Span-184" style="color: purple;"><span class="mi" id="MathJax-Span-185" style="font-family: MathJax_Math-italic; color: purple;">P<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.11em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.266em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.059em; border-left: 0px solid; width: 0px; height: 0.941em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mstyle mathcolor="purple"><mi>P</mi></mstyle></math></span></span><script type="math/tex" id="MathJax-Element-5">\color{purple}P</script> is the camera's position vector. Note that the rotation (left matrix) and translation (right matrix) parts are inverted (transposed and negated respectively) since we want to rotate and translate the world in the opposite direction of where we want the camera to move. Using this LookAt matrix as our view matrix effectively transforms all the world coordinates to the view space we just defined. The LookAt matrix then does exactly what it says: it creates a view matrix that <em>looks</em> at a given target.
+</p>
+
+<p>
+  Luckily for us, GLM already does all this work for us. We only have to specify a camera position, a target position and a vector that represents the up vector in world space (the up vector we used for calculating the right vector). GLM then creates the LookAt matrix that we can use as our view matrix:
+</p>
+
+<pre><code class=" hljs cpp">
+glm::<span class="hljs-built_in">mat4</span> view;
+view = <function id="62">glm::lookAt</function>(glm::<span class="hljs-built_in">vec3</span>(<span class="hljs-number">0.0f</span>, <span class="hljs-number">0.0f</span>, <span class="hljs-number">3.0f</span>), 
+  		   glm::<span class="hljs-built_in">vec3</span>(<span class="hljs-number">0.0f</span>, <span class="hljs-number">0.0f</span>, <span class="hljs-number">0.0f</span>), 
+  		   glm::<span class="hljs-built_in">vec3</span>(<span class="hljs-number">0.0f</span>, <span class="hljs-number">1.0f</span>, <span class="hljs-number">0.0f</span>));
+</code></pre>
+
+<p>
+  The <fun><function id="62">glm::LookAt</function></fun> function requires a position, target and up vector respectively. This example creates a view matrix that is the same as the one we created in the previous chapter.
+</p>
+
+<p>
+  Before delving into user input, let's get a little funky first by rotating the camera around our scene. We keep the target of the scene at <code>(0,0,0)</code>. We use a little bit of trigonometry to create an <code>x</code> and <code>z</code> coordinate each frame that represents a point on a circle and we'll use these for our camera position. By re-calculating the <code>x</code> and <code>y</code> coordinate over time we're traversing all the points in a circle and thus the camera rotates around the scene. We enlarge this circle by a pre-defined <var>radius</var> and create a new view matrix each frame using GLFW's <fun><function id="47">glfwGetTime</function></fun> function:
+</p>
+
+<pre><code class=" hljs cpp">
+<span class="hljs-keyword">const</span> <span class="hljs-keyword">float</span> radius = <span class="hljs-number">10.0f</span>;
+<span class="hljs-keyword">float</span> camX = <span class="hljs-built_in">sin</span>(<function id="47">glfwGetTime</function>()) * radius;
+<span class="hljs-keyword">float</span> camZ = <span class="hljs-built_in">cos</span>(<function id="47">glfwGetTime</function>()) * radius;
+glm::<span class="hljs-built_in">mat4</span> view;
+view = <function id="62">glm::lookAt</function>(glm::<span class="hljs-built_in">vec3</span>(camX, <span class="hljs-number">0.0</span>, camZ), glm::<span class="hljs-built_in">vec3</span>(<span class="hljs-number">0.0</span>, <span class="hljs-number">0.0</span>, <span class="hljs-number">0.0</span>), glm::<span class="hljs-built_in">vec3</span>(<span class="hljs-number">0.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">0.0</span>));  
+</code></pre>
+
+<p>
+  If you run this code you should get something like this:
+</p>
+
+<div class="video paused" onclick="ClickVideo(this)">
+  <video width="600" height="450" loop="">
+    <source src="/video/getting-started/camera_circle.mp4" type="video/mp4">
+    <img src="./LearnOpenGL - Camera_files/camera_circle.png" class="clean">
+  </video>
+</div>
+
+<p>
+  With this little snippet of code the camera now circles around the scene over time. Feel free to experiment with the radius and position/direction parameters to get the feel of how this <em>LookAt</em> matrix works. Also, check the  <a href="https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/7.1.camera_circle/camera_circle.cpp" target="_blank">source code</a> if you're stuck.
+</p>
+
+<h1>Walk around</h1>
+<p>
+  Swinging the camera around a scene is fun, but it's more fun to do all the movement ourselves! First we need to set up a camera system, so it is useful to define some camera variables at the top of our program:
+</p>
+
+<pre><code class=" hljs cpp">
+glm::<span class="hljs-built_in">vec3</span> cameraPos   = glm::<span class="hljs-built_in">vec3</span>(<span class="hljs-number">0.0f</span>, <span class="hljs-number">0.0f</span>,  <span class="hljs-number">3.0f</span>);
+glm::<span class="hljs-built_in">vec3</span> cameraFront = glm::<span class="hljs-built_in">vec3</span>(<span class="hljs-number">0.0f</span>, <span class="hljs-number">0.0f</span>, -<span class="hljs-number">1.0f</span>);
+glm::<span class="hljs-built_in">vec3</span> cameraUp    = glm::<span class="hljs-built_in">vec3</span>(<span class="hljs-number">0.0f</span>, <span class="hljs-number">1.0f</span>,  <span class="hljs-number">0.0f</span>);
+</code></pre>
+
+<p>
+  The <code>LookAt</code> function now becomes:
+</p>
+
+<pre><code class=" hljs ">
+view = <function id="62">glm::lookAt</function>(cameraPos, cameraPos + cameraFront, cameraUp);
+</code></pre>
+
+<p>
+  First we set the camera position to the previously defined <var>cameraPos</var>. The direction is the current position + the direction vector we just defined. This ensures that however we move, the camera keeps looking at the target direction. Let's play a bit with these variables by updating the <var>cameraPos</var> vector when we press some keys.
+</p>
+
+<p>
+  We already defined a <fun>processInput</fun> function to manage GLFW's keyboard input so let's add a few extra key commands:
+</p>
+
+<pre><code class=" hljs cpp">
+<span class="hljs-keyword">void</span> processInput(GLFWwindow *window)
+{
+    ...
+    <span class="hljs-keyword">const</span> <span class="hljs-keyword">float</span> cameraSpeed = <span class="hljs-number">0.05f</span>; <span class="hljs-comment">// adjust accordingly</span>
+    <span class="hljs-keyword">if</span> (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        cameraPos += cameraSpeed * cameraFront;
+    <span class="hljs-keyword">if</span> (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        cameraPos -= cameraSpeed * cameraFront;
+    <span class="hljs-keyword">if</span> (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        cameraPos -= glm::normalize(<function id="61">glm::cross</function>(cameraFront, cameraUp)) * cameraSpeed;
+    <span class="hljs-keyword">if</span> (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        cameraPos += glm::normalize(<function id="61">glm::cross</function>(cameraFront, cameraUp)) * cameraSpeed;
+}
+</code></pre>
+
+<p>
+  Whenever we press one of the <code>WASD</code> keys, the camera's position is updated accordingly. If we want to move forward or backwards we add or subtract the direction vector from the position vector scaled by some speed value. If we want to move sideways we do a cross product to create a <em>right</em> vector and we move along the right vector accordingly. This creates the familiar <def>strafe</def> effect when using the camera. 
+</p>
+
+<note>
+  Note that we normalize the resulting <em>right</em> vector. If we wouldn't normalize this vector, the resulting cross product may return differently sized vectors based on the <var>cameraFront</var> variable. If we would not normalize the vector we would move slow or fast based on the camera's orientation instead of at a consistent movement speed.
+</note>
+
+<p>
+  By now, you should already be able to move the camera somewhat, albeit at a speed that's system-specific so you may need to adjust <var>cameraSpeed</var>.
+
+</p><h2>Movement speed</h2>
+<p>
+  Currently we used a constant value for movement speed when walking around. In theory this seems fine, but in practice people's machines have different processing powers and the result of that is that some people are able to render much more frames than others each second. Whenever a user renders more frames than another user he also calls <fun>processInput</fun> more often. The result is that some people move really fast and some really slow depending on their setup. When shipping your application you want to make sure it runs the same on all kinds of hardware.
+</p>
+
+<p>
+  Graphics applications and games usually keep track of a <def>deltatime</def> variable that stores the time it took to render the last frame. We then multiply all velocities with this <var>deltaTime</var> value. The result is that when we have a large <var>deltaTime</var> in a frame, meaning that the last frame took longer than average, the velocity for that frame will also be a bit higher to balance it all out. When using this approach it does not matter if you have a very fast or slow pc, the velocity of the camera will be balanced out accordingly so each user will have the same experience.
+</p>
+
+<p>
+  To calculate the <var>deltaTime</var> value we keep track of 2 global variables:
+</p>
+
+<pre><code class=" hljs cpp">
+<span class="hljs-keyword">float</span> deltaTime = <span class="hljs-number">0.0f</span>;	<span class="hljs-comment">// Time between current frame and last frame</span>
+<span class="hljs-keyword">float</span> lastFrame = <span class="hljs-number">0.0f</span>; <span class="hljs-comment">// Time of last frame</span>
+</code></pre>
+
+<p>
+  Within each frame we then calculate the new <var>deltaTime</var> value for later use:
+</p>
+
+<pre><code class=" hljs cpp">
+<span class="hljs-keyword">float</span> currentFrame = <function id="47">glfwGetTime</function>();
+deltaTime = currentFrame - lastFrame;
+lastFrame = currentFrame;  
+</code></pre>
+
+<p>
+  Now that we have <var>deltaTime</var> we can take it into account when calculating the velocities:
+</p>
+
+<pre><code class=" hljs cpp">
+<span class="hljs-keyword">void</span> processInput(GLFWwindow *window)
+{
+    <span class="hljs-keyword">float</span> cameraSpeed = <span class="hljs-number">2.5f</span> * deltaTime;
+    [...]
+}
+</code></pre>
+
+<p>
+  Since we're using <var>deltaTime</var> the camera will now move at a constant speed of <code>2.5</code> units per second. Together with the previous section we should now have a much smoother and more consistent camera system for moving around the scene:
+</p>
+
+<div class="video paused" onclick="ClickVideo(this)">
+  <video width="600" height="450" loop="">
+    <source src="/video/getting-started/camera_smooth.mp4" type="video/mp4">
+    <img src="./LearnOpenGL - Camera_files/camera_smooth.png" class="clean">    
+  </video>
+</div>
+
+<p>
+  And now we have a camera that walks and looks equally fast on any system. Again, check the  <a href="https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/7.2.camera_keyboard_dt/camera_keyboard_dt.cpp" target="_blank">source code</a> if you're stuck. We'll see the <var>deltaTime</var> value frequently return with anything movement related.
+</p>
+
+<h1>Look around</h1>
+<p>
+  Only using the keyboard keys to move around isn't that interesting. Especially since we can't turn around making the movement rather restricted. That's where the mouse comes in!
+</p>
+
+<p>
+  To look around the scene we have to change the <var>cameraFront</var> vector based on the input of the mouse. However, changing the direction vector based on mouse rotations is a little complicated and requires some trigonometry. If you do not understand the trigonometry, don't worry, you can just skip to the code sections and paste them in your code; you can always come back later if you want to know more.
+</p>
+
+<h2>Euler angles</h2>
+<p>
+  Euler angles are 3 values that can represent any rotation in 3D, defined by Leonhard Euler somewhere in the 1700s. There are 3 Euler angles: <em>pitch</em>, <em>yaw</em> and <em>roll</em>. The following image gives them a visual meaning:
+</p>
+
+<img src="./LearnOpenGL - Camera_files/camera_pitch_yaw_roll.png" alt="Euler angles yaw pitch and roll" class="clean">
+
+<p>
+  The <def>pitch</def> is the angle that depicts how much we're looking up or down as seen in the first image. The second image shows the <def>yaw</def> value which represents the magnitude we're looking to the left or to the right. The <def>roll</def> represents how much we <em>roll</em> as mostly used in space-flight cameras. Each of the Euler angles are represented by a single value and with the combination of all 3 of them we can calculate any rotation vector in 3D.
+</p>
+
+<p>
+  For our camera system we only care about the yaw and pitch values so we won't discuss the roll value here. Given a pitch and a yaw value we can convert them into a 3D vector that represents a new direction vector. The process of converting yaw and pitch values to a direction vector requires a bit of trigonometry. and we start with a basic case:
+</p>
+  
+<p>
+  Let's start with a bit of a refresher and check the general right triangle case (with one side at a 90 degree angle):
+
+<img src="./LearnOpenGL - Camera_files/camera_triangle.png" class="clean">
+
+</p><p>
+  If we define the hypotenuse to be of length <code>1</code> we know from trigonometry (soh cah toa) that the adjacant side's length is <span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax" id="MathJax-Element-6-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mi&gt;cos&lt;/mi&gt;&lt;mo&gt;&amp;#x2061;&lt;/mo&gt;&lt;mtext&gt;&amp;#xA0;&lt;/mtext&gt;&lt;mstyle mathcolor=&quot;red&quot;&gt;&lt;mi&gt;x&lt;/mi&gt;&lt;/mstyle&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mo&gt;/&lt;/mo&gt;&lt;/mrow&gt;&lt;mstyle mathcolor=&quot;purple&quot;&gt;&lt;mi&gt;h&lt;/mi&gt;&lt;/mstyle&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mi&gt;cos&lt;/mi&gt;&lt;mo&gt;&amp;#x2061;&lt;/mo&gt;&lt;mtext&gt;&amp;#xA0;&lt;/mtext&gt;&lt;mstyle mathcolor=&quot;red&quot;&gt;&lt;mi&gt;x&lt;/mi&gt;&lt;/mstyle&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mo&gt;/&lt;/mo&gt;&lt;/mrow&gt;&lt;mstyle mathcolor=&quot;purple&quot;&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/mstyle&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mi&gt;cos&lt;/mi&gt;&lt;mo&gt;&amp;#x2061;&lt;/mo&gt;&lt;mtext&gt;&amp;#xA0;&lt;/mtext&gt;&lt;mstyle mathcolor=&quot;red&quot;&gt;&lt;mi&gt;x&lt;/mi&gt;&lt;/mstyle&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-186" role="math" style="width: 13.58em; display: inline-block;"><span style="display: inline-block; position: relative; width: 11.695em; height: 0px; font-size: 116%;"><span style="position: absolute; clip: rect(1.35em, 1011.64em, 2.697em, -999.997em); top: -2.26em; left: 0.003em;"><span class="mrow" id="MathJax-Span-187"><span class="mi" id="MathJax-Span-188" style="font-family: MathJax_Main;">cos</span><span class="mo" id="MathJax-Span-189"></span><span class="mtext" id="MathJax-Span-190" style="font-family: MathJax_Main; padding-left: 0.164em;">&nbsp;</span><span class="mstyle" id="MathJax-Span-191" style="color: red;"><span class="mrow" id="MathJax-Span-192" style="color: red;"><span class="mi" id="MathJax-Span-193" style="font-family: MathJax_Math-italic; color: red;">x</span></span></span><span class="texatom" id="MathJax-Span-194"><span class="mrow" id="MathJax-Span-195"><span class="mo" id="MathJax-Span-196" style="font-family: MathJax_Main;">/</span></span></span><span class="mstyle" id="MathJax-Span-197" style="color: purple;"><span class="mrow" id="MathJax-Span-198" style="color: purple;"><span class="mi" id="MathJax-Span-199" style="font-family: MathJax_Math-italic; color: purple;">h</span></span></span><span class="mo" id="MathJax-Span-200" style="font-family: MathJax_Main; padding-left: 0.272em;">=</span><span class="mi" id="MathJax-Span-201" style="font-family: MathJax_Main; padding-left: 0.272em;">cos</span><span class="mo" id="MathJax-Span-202"></span><span class="mtext" id="MathJax-Span-203" style="font-family: MathJax_Main; padding-left: 0.164em;">&nbsp;</span><span class="mstyle" id="MathJax-Span-204" style="color: red;"><span class="mrow" id="MathJax-Span-205" style="color: red;"><span class="mi" id="MathJax-Span-206" style="font-family: MathJax_Math-italic; color: red;">x</span></span></span><span class="texatom" id="MathJax-Span-207"><span class="mrow" id="MathJax-Span-208"><span class="mo" id="MathJax-Span-209" style="font-family: MathJax_Main;">/</span></span></span><span class="mstyle" id="MathJax-Span-210" style="color: purple;"><span class="mrow" id="MathJax-Span-211" style="color: purple;"><span class="mn" id="MathJax-Span-212" style="font-family: MathJax_Main; color: purple;">1</span></span></span><span class="mo" id="MathJax-Span-213" style="font-family: MathJax_Main; padding-left: 0.272em;">=</span><span class="mi" id="MathJax-Span-214" style="font-family: MathJax_Main; padding-left: 0.272em;">cos</span><span class="mo" id="MathJax-Span-215"></span><span class="mtext" id="MathJax-Span-216" style="font-family: MathJax_Main; padding-left: 0.164em;">&nbsp;</span><span class="mstyle" id="MathJax-Span-217" style="color: red;"><span class="mrow" id="MathJax-Span-218" style="color: red;"><span class="mi" id="MathJax-Span-219" style="font-family: MathJax_Math-italic; color: red;">x</span></span></span></span><span style="display: inline-block; width: 0px; height: 2.266em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.372em; border-left: 0px solid; width: 0px; height: 1.316em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>cos</mi><mo>⁡</mo><mtext>&nbsp;</mtext><mstyle mathcolor="red"><mi>x</mi></mstyle><mrow class="MJX-TeXAtom-ORD"><mo>/</mo></mrow><mstyle mathcolor="purple"><mi>h</mi></mstyle><mo>=</mo><mi>cos</mi><mo>⁡</mo><mtext>&nbsp;</mtext><mstyle mathcolor="red"><mi>x</mi></mstyle><mrow class="MJX-TeXAtom-ORD"><mo>/</mo></mrow><mstyle mathcolor="purple"><mn>1</mn></mstyle><mo>=</mo><mi>cos</mi><mo>⁡</mo><mtext>&nbsp;</mtext><mstyle mathcolor="red"><mi>x</mi></mstyle></math></span></span><script type="math/tex" id="MathJax-Element-6">\cos \ \color{red}x/\color{purple}h = \cos \ \color{red}x/\color{purple}1 = \cos\ \color{red}x</script> and that the opposing side's length is <span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax" id="MathJax-Element-7-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mi&gt;sin&lt;/mi&gt;&lt;mo&gt;&amp;#x2061;&lt;/mo&gt;&lt;mtext&gt;&amp;#xA0;&lt;/mtext&gt;&lt;mstyle mathcolor=&quot;green&quot;&gt;&lt;mi&gt;y&lt;/mi&gt;&lt;/mstyle&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mo&gt;/&lt;/mo&gt;&lt;/mrow&gt;&lt;mstyle mathcolor=&quot;purple&quot;&gt;&lt;mi&gt;h&lt;/mi&gt;&lt;/mstyle&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mi&gt;sin&lt;/mi&gt;&lt;mo&gt;&amp;#x2061;&lt;/mo&gt;&lt;mtext&gt;&amp;#xA0;&lt;/mtext&gt;&lt;mstyle mathcolor=&quot;green&quot;&gt;&lt;mi&gt;y&lt;/mi&gt;&lt;/mstyle&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mo&gt;/&lt;/mo&gt;&lt;/mrow&gt;&lt;mstyle mathcolor=&quot;purple&quot;&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/mstyle&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mi&gt;sin&lt;/mi&gt;&lt;mo&gt;&amp;#x2061;&lt;/mo&gt;&lt;mtext&gt;&amp;#xA0;&lt;/mtext&gt;&lt;mstyle mathcolor=&quot;green&quot;&gt;&lt;mi&gt;y&lt;/mi&gt;&lt;/mstyle&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-220" role="math" style="width: 12.88em; display: inline-block;"><span style="display: inline-block; position: relative; width: 11.102em; height: 0px; font-size: 116%;"><span style="position: absolute; clip: rect(1.35em, 1011.1em, 2.697em, -999.997em); top: -2.26em; left: 0.003em;"><span class="mrow" id="MathJax-Span-221"><span class="mi" id="MathJax-Span-222" style="font-family: MathJax_Main;">sin</span><span class="mo" id="MathJax-Span-223"></span><span class="mtext" id="MathJax-Span-224" style="font-family: MathJax_Main; padding-left: 0.164em;">&nbsp;</span><span class="mstyle" id="MathJax-Span-225" style="color: green;"><span class="mrow" id="MathJax-Span-226" style="color: green;"><span class="mi" id="MathJax-Span-227" style="font-family: MathJax_Math-italic; color: green;">y<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.003em;"></span></span></span></span><span class="texatom" id="MathJax-Span-228"><span class="mrow" id="MathJax-Span-229"><span class="mo" id="MathJax-Span-230" style="font-family: MathJax_Main;">/</span></span></span><span class="mstyle" id="MathJax-Span-231" style="color: purple;"><span class="mrow" id="MathJax-Span-232" style="color: purple;"><span class="mi" id="MathJax-Span-233" style="font-family: MathJax_Math-italic; color: purple;">h</span></span></span><span class="mo" id="MathJax-Span-234" style="font-family: MathJax_Main; padding-left: 0.272em;">=</span><span class="mi" id="MathJax-Span-235" style="font-family: MathJax_Main; padding-left: 0.272em;">sin</span><span class="mo" id="MathJax-Span-236"></span><span class="mtext" id="MathJax-Span-237" style="font-family: MathJax_Main; padding-left: 0.164em;">&nbsp;</span><span class="mstyle" id="MathJax-Span-238" style="color: green;"><span class="mrow" id="MathJax-Span-239" style="color: green;"><span class="mi" id="MathJax-Span-240" style="font-family: MathJax_Math-italic; color: green;">y<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.003em;"></span></span></span></span><span class="texatom" id="MathJax-Span-241"><span class="mrow" id="MathJax-Span-242"><span class="mo" id="MathJax-Span-243" style="font-family: MathJax_Main;">/</span></span></span><span class="mstyle" id="MathJax-Span-244" style="color: purple;"><span class="mrow" id="MathJax-Span-245" style="color: purple;"><span class="mn" id="MathJax-Span-246" style="font-family: MathJax_Main; color: purple;">1</span></span></span><span class="mo" id="MathJax-Span-247" style="font-family: MathJax_Main; padding-left: 0.272em;">=</span><span class="mi" id="MathJax-Span-248" style="font-family: MathJax_Main; padding-left: 0.272em;">sin</span><span class="mo" id="MathJax-Span-249"></span><span class="mtext" id="MathJax-Span-250" style="font-family: MathJax_Main; padding-left: 0.164em;">&nbsp;</span><span class="mstyle" id="MathJax-Span-251" style="color: green;"><span class="mrow" id="MathJax-Span-252" style="color: green;"><span class="mi" id="MathJax-Span-253" style="font-family: MathJax_Math-italic; color: green;">y<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.003em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.266em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.372em; border-left: 0px solid; width: 0px; height: 1.316em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>sin</mi><mo>⁡</mo><mtext>&nbsp;</mtext><mstyle mathcolor="green"><mi>y</mi></mstyle><mrow class="MJX-TeXAtom-ORD"><mo>/</mo></mrow><mstyle mathcolor="purple"><mi>h</mi></mstyle><mo>=</mo><mi>sin</mi><mo>⁡</mo><mtext>&nbsp;</mtext><mstyle mathcolor="green"><mi>y</mi></mstyle><mrow class="MJX-TeXAtom-ORD"><mo>/</mo></mrow><mstyle mathcolor="purple"><mn>1</mn></mstyle><mo>=</mo><mi>sin</mi><mo>⁡</mo><mtext>&nbsp;</mtext><mstyle mathcolor="green"><mi>y</mi></mstyle></math></span></span><script type="math/tex" id="MathJax-Element-7">\sin \ \color{green}y/\color{purple}h = \sin \ \color{green}y/\color{purple}1 = \sin\ \color{green}y</script>.  This gives us some general formulas for retrieving the length in both the <code>x</code> and <code>y</code> sides on right triangles, depending on the given angle. Let's use this to calculate the components of the direction vector.
+</p>
+  
+<p>
+  Let's imagine this same triangle, but now looking at it from a top perspective with the adjacent and opposite sides being parallel to the scene's x and z axis (as if looking down the y-axis). 
+</p>
+  
+<img src="./LearnOpenGL - Camera_files/camera_yaw.png" class="clean">
+
+<p>
+  If we visualize the yaw angle to be the counter-clockwise angle starting from the <code>x</code> side we can see that the length of the <code>x</code> side relates to <code>cos(yaw)</code>. And similarly how the length of the <code>z</code> side relates to <code>sin(yaw)</code>. 
+</p>  
+  
+<p>
+  If we take this knowledge and a given <code>yaw</code> value we can use it to create a camera direction vector:
+</p>
+  
+<pre><code class=" hljs cpp">
+glm::<span class="hljs-built_in">vec3</span> direction;
+direction.x = <span class="hljs-built_in">cos</span>(<function id="63">glm::radians</function>(yaw)); <span class="hljs-comment">// Note that we convert the angle to radians first</span>
+direction.z = <span class="hljs-built_in">sin</span>(<function id="63">glm::radians</function>(yaw));
+</code></pre>
+  
+<p>
+  This solves how we can get a 3D direction vector from a yaw value, but pitch needs to be included as well. Let's now look at the <code>y</code> axis side as if we're sitting on the <code>xz</code> plane: 
+</p>
+  
+
+<img src="./LearnOpenGL - Camera_files/camera_pitch.png" class="clean">
+
+<p>
+  Similarly, from this triangle we can see that the direction's y component equals <code>sin(pitch)</code> so let's fill that in:
+</p>
+  
+  
+<pre><code class=" hljs cpp">
+direction.y = <span class="hljs-built_in">sin</span>(<function id="63">glm::radians</function>(pitch));  
+</code></pre>
+    
+<p>
+  However, from the pitch triangle we can also see the <code>xz</code> sides are influenced by <code>cos(pitch)</code> so we need to make sure this is also part of the direction vector. With this included we get the final direction vector as translated from yaw and pitch Euler angles:
+</p>
+  
+<pre><code class=" hljs cpp">
+direction.x = <span class="hljs-built_in">cos</span>(<function id="63">glm::radians</function>(yaw)) * <span class="hljs-built_in">cos</span>(<function id="63">glm::radians</function>(pitch));
+direction.y = <span class="hljs-built_in">sin</span>(<function id="63">glm::radians</function>(pitch));
+direction.z = <span class="hljs-built_in">sin</span>(<function id="63">glm::radians</function>(yaw)) * <span class="hljs-built_in">cos</span>(<function id="63">glm::radians</function>(pitch));
+</code></pre>
+  
+<p>
+  This gives us a formula to convert yaw and pitch values to a 3-dimensional direction vector that we can use for looking around. 
+</p>
+  
+<p>
+  We've set up the scene world so everything's positioned in the direction of the negative z-axis. However, if we look at the <code>x</code> and <code>z</code> yaw triangle we see that a <span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax" id="MathJax-Element-8-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mi&gt;&amp;#x03B8;&lt;/mi&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-254" role="math" style="width: 0.595em; display: inline-block;"><span style="display: inline-block; position: relative; width: 0.488em; height: 0px; font-size: 116%;"><span style="position: absolute; clip: rect(1.404em, 1000.49em, 2.427em, -999.997em); top: -2.26em; left: 0.003em;"><span class="mrow" id="MathJax-Span-255"><span class="mi" id="MathJax-Span-256" style="font-family: MathJax_Math-italic;">θ</span></span><span style="display: inline-block; width: 0px; height: 2.266em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.059em; border-left: 0px solid; width: 0px; height: 0.941em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>θ</mi></math></span></span><script type="math/tex" id="MathJax-Element-8">\theta</script> of <code>0</code> results in the camera's <code>direction</code> vector to point towards the positive x-axis. To make sure the camera points towards the negative z-axis by default we can give the <code>yaw</code> a default value of a 90 degree clockwise rotation. Positive degrees rotate counter-clockwise so we set the default <code>yaw</code> value to:
+</p>
+  
+<pre><code class=" hljs cpp">
+yaw = -<span class="hljs-number">90.0f</span>;
+</code></pre>
+  
+<p>
+  
+    You've probably wondered by now: how do we set and modify these yaw and pitch values?
+</p>
+
+
+<h2>Mouse input</h2>
+<p>
+  The yaw and pitch values are obtained from mouse (or controller/joystick) movement where horizontal mouse-movement affects the yaw and vertical mouse-movement affects the pitch. The idea is to store the last frame's mouse positions and calculate in the current frame how much the mouse values changed. The higher the horizontal or vertical difference, the more we update the pitch or yaw value and thus the more the camera should move. 
+</p>
+
+<p>
+  First we will tell GLFW that it should hide the cursor and <def>capture</def> it. Capturing a cursor means that, once the application has focus, the mouse cursor stays within the center of the window (unless the application loses focus or quits). We can do this with one simple configuration call:
+</p>
+
+<pre><code class=" hljs ">
+glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);  
+</code></pre>
+
+<p>
+  After this call, wherever we move the mouse it won't be visible and it should not leave the window. This is perfect for an FPS camera system.
+</p>
+
+<p>
+To calculate the pitch and yaw values we need to tell GLFW to listen to mouse-movement events. We do this by creating a callback function with the following prototype:
+</p>
+
+<pre><code class=" hljs cpp">
+<span class="hljs-keyword">void</span> mouse_callback(GLFWwindow* window, <span class="hljs-keyword">double</span> xpos, <span class="hljs-keyword">double</span> ypos);
+</code></pre>
+
+<p>
+  Here <var>xpos</var> and <var>ypos</var> represent the current mouse positions. As soon as we register the callback function with GLFW each time the mouse moves, the <fun>mouse_callback</fun> function is called:
+</p>
+
+<pre><code class=" hljs ">
+glfwSetCursorPosCallback(window, mouse_callback);  
+</code></pre>
+
+<p>
+  When handling mouse input for a fly style camera there are several steps we have to take  before we're able to fully calculate the camera's direction vector:
+  
+  </p><ol>
+    <li>Calculate the mouse's offset since the last frame.</li>
+    <li>Add the offset values to the camera's yaw and pitch values.</li>
+    <li>Add some constraints to the minimum/maximum pitch values.</li>
+    <li>Calculate the direction vector.</li>
+  </ol>
+<p></p>
+
+<p>
+  The first step is to calculate the offset of the mouse since last frame. We first have to store the last mouse positions in the application, which we initialize to be in the center of the screen (screen size is <code>800</code> by <code>600</code>) initially:
+</p>
+
+<pre class="cpp"><code class=" hljs ">
+<span class="hljs-keyword">float</span> lastX = <span class="hljs-number">400</span>, lastY = <span class="hljs-number">300</span>;
+</code></pre>
+
+<p>
+  Then in the mouse's callback function we calculate the offset movement between the last and current frame:
+</p>
+
+<pre><code class=" hljs cpp">
+<span class="hljs-keyword">float</span> xoffset = xpos - lastX;
+<span class="hljs-keyword">float</span> yoffset = lastY - ypos; <span class="hljs-comment">// reversed since y-coordinates range from bottom to top</span>
+lastX = xpos;
+lastY = ypos;
+
+<span class="hljs-keyword">const</span> <span class="hljs-keyword">float</span> sensitivity = <span class="hljs-number">0.1f</span>;
+xoffset *= sensitivity;
+yoffset *= sensitivity;
+</code></pre>
+
+<p>
+  Note that we multiply the offset values by a <var>sensitivity</var> value. If we omit this multiplication the mouse movement would be way too strong; fiddle around with the sensitivity value to your liking.
+</p>
+
+<p>
+  Next we add the offset values to the globally declared <var>pitch</var> and <var>yaw</var> values:
+</p>
+
+<pre><code class=" hljs ">
+yaw   += xoffset;
+pitch += yoffset;  
+</code></pre>
+
+<p>
+  In the third step we'd like to add some constraints to the camera so users won't be able to make weird camera movements (also causes a LookAt flip once direction vector is parallel to the world up direction). The pitch needs to be constrained in such a way that users won't be able to look higher than <code>89</code> degrees (at <code>90</code> degrees we get the LookAt flip) and also not below <code>-89</code> degrees. This ensures the user will be able to look up to the sky or below to his feet but not further. The constraints work by replacing the Euler value with its constraint value whenever it breaches the constraint:
+</p>
+
+<pre><code class=" hljs cpp">
+<span class="hljs-keyword">if</span>(pitch &gt; <span class="hljs-number">89.0f</span>)
+  pitch =  <span class="hljs-number">89.0f</span>;
+<span class="hljs-keyword">if</span>(pitch &lt; -<span class="hljs-number">89.0f</span>)
+  pitch = -<span class="hljs-number">89.0f</span>;
+</code></pre>
+
+<p>
+  Note that we set no constraint on the yaw value since we don't want to constrain the user in horizontal rotation. However, it's just as easy to add a constraint to the yaw as well if you feel like it.
+</p>
+
+<p>
+  The fourth and last step is to calculate the actual direction vector using the formula from the previous section:
+</p>
+
+<pre><code class=" hljs cpp">
+glm::<span class="hljs-built_in">vec3</span> direction;
+direction.x = <span class="hljs-built_in">cos</span>(<function id="63">glm::radians</function>(yaw)) * <span class="hljs-built_in">cos</span>(<function id="63">glm::radians</function>(pitch));
+direction.y = <span class="hljs-built_in">sin</span>(<function id="63">glm::radians</function>(pitch));
+direction.z = <span class="hljs-built_in">sin</span>(<function id="63">glm::radians</function>(yaw)) * <span class="hljs-built_in">cos</span>(<function id="63">glm::radians</function>(pitch));
+cameraFront = glm::normalize(direction);
+</code></pre>
+  
+  <p>
+    This computed direction vector then contains all the rotations calculated from the mouse's movement. Since the <var>cameraFront</var> vector is already included in glm's <fun>lookAt</fun> function we're set to go.
+</p>
+
+<p>
+  If you'd now run the code you'll notice the camera makes a large sudden jump whenever the window first receives focus of your mouse cursor. The cause for this sudden jump is that as soon as your cursor enters the window the mouse callback function is called with an <var>xpos</var> and <var>ypos</var> position equal to the location your mouse entered the screen from. This is often a position that is significantly far away from the center of the screen, resulting in large offsets and thus a large movement jump. We can circumvent this issue by defining a global <code>bool</code> variable to check if this is the first time we receive mouse input. If it is the first time, we update the initial mouse positions to the new <var>xpos</var> and <code>ypos</code> values. The resulting mouse movements will then use the newly entered mouse's position coordinates to calculate the offsets:
+</p>
+
+<pre><code class=" hljs cpp">
+<span class="hljs-keyword">if</span> (firstMouse) <span class="hljs-comment">// initially set to true</span>
+{
+    lastX = xpos;
+    lastY = ypos;
+    firstMouse = <span class="hljs-keyword">false</span>;
+}
+</code></pre>
+
+<p>
+  The final code then becomes:
+</p>
+
+<pre><code class=" hljs cpp">
+<span class="hljs-keyword">void</span> mouse_callback(GLFWwindow* window, <span class="hljs-keyword">double</span> xpos, <span class="hljs-keyword">double</span> ypos)
+{
+    <span class="hljs-keyword">if</span> (firstMouse)
+    {
+        lastX = xpos;
+        lastY = ypos;
+        firstMouse = <span class="hljs-keyword">false</span>;
+    }
+  
+    <span class="hljs-keyword">float</span> xoffset = xpos - lastX;
+    <span class="hljs-keyword">float</span> yoffset = lastY - ypos; 
+    lastX = xpos;
+    lastY = ypos;
+
+    <span class="hljs-keyword">float</span> sensitivity = <span class="hljs-number">0.1f</span>;
+    xoffset *= sensitivity;
+    yoffset *= sensitivity;
+
+    yaw   += xoffset;
+    pitch += yoffset;
+
+    <span class="hljs-keyword">if</span>(pitch &gt; <span class="hljs-number">89.0f</span>)
+        pitch = <span class="hljs-number">89.0f</span>;
+    <span class="hljs-keyword">if</span>(pitch &lt; -<span class="hljs-number">89.0f</span>)
+        pitch = -<span class="hljs-number">89.0f</span>;
+
+    glm::<span class="hljs-built_in">vec3</span> direction;
+    direction.x = <span class="hljs-built_in">cos</span>(<function id="63">glm::radians</function>(yaw)) * <span class="hljs-built_in">cos</span>(<function id="63">glm::radians</function>(pitch));
+    direction.y = <span class="hljs-built_in">sin</span>(<function id="63">glm::radians</function>(pitch));
+    direction.z = <span class="hljs-built_in">sin</span>(<function id="63">glm::radians</function>(yaw)) * <span class="hljs-built_in">cos</span>(<function id="63">glm::radians</function>(pitch));
+    cameraFront = glm::normalize(direction);
+}  
+</code></pre>
+
+<p>
+  There we go! Give it a spin and you'll see that we can now freely move through our 3D scene! 
+</p>
+
+
+<h2>Zoom</h2>
+<p>
+  As a little extra to the camera system we'll also implement a zooming interface. In the previous chapter we said the <em>Field of view</em> or <em>fov</em> largely defines how much we can see of the scene. When the field of view becomes smaller, the scene's projected space gets smaller. This smaller space is projected over the same NDC, giving the illusion of zooming in. To zoom in, we're going to use the mouse's scroll wheel. Similar to mouse movement and keyboard input we have a callback function for mouse scrolling:
+</p>
+
+<pre><code class=" hljs cpp">
+<span class="hljs-keyword">void</span> scroll_callback(GLFWwindow* window, <span class="hljs-keyword">double</span> xoffset, <span class="hljs-keyword">double</span> yoffset)
+{
+    Zoom -= (<span class="hljs-keyword">float</span>)yoffset;
+    <span class="hljs-keyword">if</span> (Zoom &lt; <span class="hljs-number">1.0f</span>)
+        Zoom = <span class="hljs-number">1.0f</span>;
+    <span class="hljs-keyword">if</span> (Zoom &gt; <span class="hljs-number">45.0f</span>)
+        Zoom = <span class="hljs-number">45.0f</span>; 
+}
+</code></pre>
+
+<p>
+  When scrolling, the <var>yoffset</var> value tells us the amount we scrolled vertically. When the <fun>scroll_callback</fun> function is called we change the content of the globally declared <var>fov</var> variable. Since <code>45.0</code> is the default fov value we want to constrain the zoom level between <code>1.0</code> and <code> 45.0</code>.
+</p>
+
+<p>
+  We now have to upload the perspective projection matrix to the GPU each frame, but this time with the <var>fov</var> variable as its field of view:
+</p>
+
+<pre><code class=" hljs cpp">
+projection = <function id="58">glm::perspective</function>(<function id="63">glm::radians</function>(fov), <span class="hljs-number">800.0f</span> / <span class="hljs-number">600.0f</span>, <span class="hljs-number">0.1f</span>, <span class="hljs-number">100.0f</span>);  
+</code></pre>
+
+<p>
+  And lastly don't forget to register the scroll callback function:
+</p>
+
+<pre><code class=" hljs ">
+<function id="64">glfwSetScrollCallback</function>(window, scroll_callback); 
+</code></pre>
+
+<p>
+  And there you have it. We implemented a simple camera system that allows for free movement in a 3D environment.
+</p>
+
+<div class="video paused" onclick="ClickVideo(this)">
+  <video width="600" height="450" loop="">
+    <source src="/video/getting-started/camera_mouse.mp4" type="video/mp4">
+    <img src="./LearnOpenGL - Camera_files/camera_mouse.png" class="clean">    
+  </video>
+</div>
+
+<p>
+  Feel free to experiment a little and if you're stuck compare your code with the  <a href="https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/7.3.camera_mouse_zoom/camera_mouse_zoom.cpp" target="_blank">source code</a>.
+</p>
+
+<h1>Camera class</h1>
+<p>
+  In the upcoming chapters we'll always use a camera to easily look around the scenes and see the results from all angles. However, since the camera code can take up a significant amount of space on each chapter we'll abstract its details a little and create our own camera object that does most of the work for us with some neat little extras. Unlike the Shader chapter we won't walk you through creating the camera class, but provide you with the (fully commented) source code if you want to know the inner workings. 
+</p>
+
+<p>
+  Like the <code>Shader</code> object, we define the camera class entirely in a single header file. You can find the camera class <a href="https://learnopengl.com/code_viewer_gh.php?code=includes/learnopengl/camera.h" target="_blank">here</a>; you should be able to understand the code after this chapter. It is advised to at least check the class out once as an example on how you could create your own camera system.
+</p>
+
+<warning>
+  The camera system we introduced is a fly like camera that suits most purposes and works well with Euler angles, but be careful when creating different camera systems like an FPS camera, or a flight simulation camera. Each camera system has its own tricks and quirks so be sure to read up on them. For example, this fly camera doesn't allow for pitch values higher than or equal to <code>90</code> degrees and a static up vector of <code>(0,1,0)</code> doesn't work when we take roll values into account. 
+</warning>
+
+<p>
+  The updated version of the source code using the new camera object can be found  <a href="https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/7.4.camera_class/camera_class.cpp" target="_blank">here</a>.
+</p>
+
+<h2>Exercises</h2>
+<p>
+  </p><ul>
+    <li>See if you can transform the camera class in such a way that it becomes a <strong>true</strong> fps camera where you cannot fly; you can only look around while staying on the <code>xz</code> plane: <a href="https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/7.5.camera_exercise1/camera_exercise1.cpp" target="_blank">solution</a>.</li>
+    <li>Try to create your own LookAt function where you manually create a view matrix as discussed at the start of this chapter. Replace glm's LookAt function with your own implementation and see if it still acts the same: <a href="https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/7.6.camera_exercise2/camera_exercise2.cpp" target="_blank">solution</a>.</li>
+  </ul>
+<p></p>
+       
+
+    </div>
+    
+    <div id="hover">
+        HI
+    </div>
+   <!-- 728x90/320x50 sticky footer -->
+<div id="waldo-tag-6196"></div>
+
+   <div id="disqus_thread" style="display: block;"><iframe id="dsq-app5143" name="dsq-app5143" allowtransparency="true" frameborder="0" scrolling="no" tabindex="0" title="Disqus" width="100%" src="./LearnOpenGL - Camera_files/saved_resource.html" style="width: 1px !important; min-width: 100% !important; border: none !important; overflow: hidden !important; height: 8862px !important;" horizontalscrolling="no" verticalscrolling="no"></iframe></div>
+
+    
+
+
+</div> <!-- container div -->
+
+
+</div> <!-- super container div -->
+
+<iframe style="display: none;" src="./LearnOpenGL - Camera_files/saved_resource(1).html"></iframe><div style="position: absolute; width: 0px; height: 0px; overflow: hidden; padding: 0px; border: 0px; margin: 0px;"><div id="MathJax_Font_Test" style="position: absolute; visibility: hidden; top: 0px; left: 0px; width: auto; padding: 0px; border: 0px; margin: 0px; white-space: nowrap; text-align: left; text-indent: 0px; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; font-size: 40px; font-weight: normal; font-style: normal; font-family: MathJax_Size4, sans-serif;"></div></div></body></html>

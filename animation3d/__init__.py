@@ -23,11 +23,16 @@ class Scene:
         self.verts = []
         self.frame_no = 1
         self.set_perspective()
+        self.set_view()
 
     def set_perspective(self, fovy=90, aspect=None, near=1, far=1000):
         if aspect == None: aspect = self.width / self.height
         perspective = pyrr.matrix44.create_perspective_projection(fovy, aspect, near, far)
         self.prog['u_proj'].write(perspective.astype('f4'))
+
+    def set_view(self, fro=(0, 0, 1), at=(0, 0, 0), up=(0, 1, 0)):
+        view = pyrr.matrix44.create_look_at(fro, at, up)
+        self.prog['u_view'].write(view.astype('f4'))
 
     def add_vertex(self, x, y, z, r, g, b):
         self.verts.append([x, y, z, r, g, b])
