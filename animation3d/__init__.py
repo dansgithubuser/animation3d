@@ -20,9 +20,15 @@ class Material:
     def __init__(
         self,
         color=Color(w=0.5),
+        diffuse=1,
+        specular=1,
+        shininess=100,
     ):
         if len(color) == 3: color = color + (1,)
         self.color = color
+        self.diff = diffuse
+        self.spec = specular
+        self.shin = shininess
 
 class Scene:
     def __init__(self, width=640, height=480):
@@ -35,6 +41,7 @@ class Scene:
         with open(os.path.join(DIR, 'frag.glsl')) as f: frag = f.read()
         self.prog = self.ctx.program(vertex_shader=vert, fragment_shader=frag)
         self.verts = []
+        self.lights = []
         self.frame_no = 1
         self.set_perspective()
         self.set_view()
@@ -53,21 +60,35 @@ class Scene:
         view = pyrr.matrix44.create_look_at(fro, at, up)
         self.prog['u_view'].write(view.astype('f4'))
 
-    def add_vertex(self, at, material=Material()):
+    def add_vertex(self, at, normal=Point(), material=Material()):
         self.verts.append([
             *at,
+            *normal,
             *material.color,
+            material.diff,
+            material.spec,
+            material.shin,
         ])
+
+    def add_light(self, at, color=Color(w=1)):
+        if len(self.lights) == 1: raise Exception('multiple lights not implemented')
+        self.lights.append((at, color[0:3]))
 
     def frame(self):
         self.fbo.clear()
+        self.prog['u_light_pos'] = self.lights[0][0]
+        self.prog['u_light_color'] = self.lights[0][1]
         va = self.ctx.vertex_array(
             self.prog,
             [(
                 self.ctx.buffer(np.array(self.verts, dtype='f4')),
-                '3f 4f',
+                '3f 3f 4f 1f 1f 1f',
                 'a_pos',
+                'a_normal',
                 'a_color',
+                'a_diff',
+                'a_spec',
+                'a_shin',
             )],
         )
         va.render(mode=moderngl.TRIANGLES)
@@ -77,6 +98,7 @@ class Scene:
         print('completed frame', self.frame_no)
         self.frame_no += 1
         self.verts.clear()
+        self.lights.clear()
 
     def animate(self, frame_rate=30):
         file_name = 'animation.mkv'
