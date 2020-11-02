@@ -38,6 +38,10 @@ class Scene:
         self.frame_no = 1
         self.set_perspective()
         self.set_view()
+        self.set_ambient_light(Color(w=1))
+
+    def set_ambient_light(self, color):
+        self.prog['u_amb'] = color[0:3]
 
     def set_perspective(self, fov=90, aspect=None, near=1, far=1000):
         if aspect == None: aspect = self.width / self.height
