@@ -10,6 +10,20 @@ import subprocess
 
 DIR = os.path.dirname(os.path.realpath(__file__))
 
+def Point(x=0, y=0, z=0):
+    return (x, y, z)
+
+def Color(r=0, g=0, b=0, a=1.0, w=0):
+    return (r+w, g+w, b+w, a)
+
+class Material:
+    def __init__(
+        self,
+        color=Color(w=0.5),
+    ):
+        if len(color) == 3: color = color + (1,)
+        self.color = color
+
 class Scene:
     def __init__(self, width=640, height=480):
         self.width = width
@@ -25,25 +39,32 @@ class Scene:
         self.set_perspective()
         self.set_view()
 
-    def set_perspective(self, fovy=90, aspect=None, near=1, far=1000):
+    def set_perspective(self, fov=90, aspect=None, near=1, far=1000):
         if aspect == None: aspect = self.width / self.height
+        fovy = fov / aspect
         perspective = pyrr.matrix44.create_perspective_projection(fovy, aspect, near, far)
         self.prog['u_proj'].write(perspective.astype('f4'))
 
-    def set_view(self, fro=(0, 0, 1), at=(0, 0, 0), up=(0, 1, 0)):
+    def set_view(self, fro=Point(z=1), at=Point(), up=Point(y=1)):
         view = pyrr.matrix44.create_look_at(fro, at, up)
         self.prog['u_view'].write(view.astype('f4'))
 
-    def add_vertex(self, x, y, z, r, g, b):
-        self.verts.append([x, y, z, r, g, b])
+    def add_vertex(self, at, material=Material()):
+        self.verts.append([
+            *at,
+            *material.color,
+        ])
 
     def frame(self):
         self.fbo.clear()
-        va = self.ctx.simple_vertex_array(
+        va = self.ctx.vertex_array(
             self.prog,
-            self.ctx.buffer(np.array(self.verts, dtype='f4')),
-            'in_vert',
-            'in_color',
+            [(
+                self.ctx.buffer(np.array(self.verts, dtype='f4')),
+                '3f 4f',
+                'a_pos',
+                'a_color',
+            )],
         )
         va.render(mode=moderngl.TRIANGLES)
         image = Image.frombytes('RGBA', (self.width, self.height), self.fbo.read(components=4))
@@ -53,8 +74,8 @@ class Scene:
         self.frame_no += 1
         self.verts.clear()
 
-    def animate(self, framerate=30):
+    def animate(self, frame_rate=30):
         file_name = 'animation.mkv'
         if os.path.exists(file_name): os.remove(file_name)
-        subprocess.run(f'ffmpeg -framerate {framerate} -i frame-%06d.png {file_name}'.split())
+        subprocess.run(f'ffmpeg -framerate {frame_rate} -i frame-%06d.png {file_name}'.split())
         for i in glob.glob('frame-*.png'): os.remove(i)
