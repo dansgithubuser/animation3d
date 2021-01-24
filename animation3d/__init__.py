@@ -10,11 +10,57 @@ import subprocess
 
 DIR = os.path.dirname(os.path.realpath(__file__))
 
-def Point(x=0, y=0, z=0):
-    return (x, y, z)
+class Point:
+    def __init__(self, x=0, y=0, z=0):
+        self.x = x
+        self.y = y
+        self.z = z
 
-def Color(r=0, g=0, b=0, a=1.0, w=0):
-    return (r+w, g+w, b+w, a)
+    def tuple(self):
+        return (self.x, self.y, self.z)
+
+    def __getitem__(self, key):
+        return self.tuple()[key]
+
+    def __len__(self):
+        return 3
+
+    def __iter__(self):
+        return (self[i] for i in range(len(self)))
+
+    def __repr__(self):
+        return f'<Point {self.x}, {self.y}, {self.z}>'
+
+class View:
+    def __init__(self, fro=Point(z=1), at=Point(), up=Point(y=1)):
+        self.fro = fro
+        self.at = at
+        self.up = up
+
+    def __repr__(self):
+        return f'<View fro=({self.fro.x}, {self.fro.y}, {self.fro.z}) at=({self.at.x}, {self.at.y}, {self.at.z}), up=({self.up.x}, {self.up.y}, {self.up.z})>'
+
+class Color:
+    def __init__(self, r=0, g=0, b=0, a=1, w=0):
+        self.r = r + w
+        self.g = g + w
+        self.b = b + w
+        self.a = a
+
+    def tuple(self):
+        return (self.r, self.g, self.b, self.a)
+
+    def __getitem__(self, key):
+        return self.tuple()[key]
+
+    def __len__(self):
+        return 4
+
+    def __iter__(self):
+        return (self[i] for i in range(len(self)))
+
+    def __repr__(self):
+        return f'<Color {self.r}, {self.g}, {self.b}, {self.a}>'
 
 class Material:
     def __init__(
@@ -24,7 +70,6 @@ class Material:
         specular=1,
         shininess=100,
     ):
-        if len(color) == 3: color = color + (1,)
         self.color = color
         self.diff = diffuse
         self.spec = specular
@@ -62,8 +107,10 @@ class Scene:
         perspective = pyrr.matrix44.create_perspective_projection(fovy, aspect, near, far)
         self.prog['u_proj'].write(perspective.astype('f4'))
 
-    def set_view(self, fro=Point(z=1), at=Point(), up=Point(y=1)):
-        view = pyrr.matrix44.create_look_at(fro, at, up)
+    def set_view(self, *args, **kwargs):
+        view = View(*args, **kwargs)
+        self.view = view
+        view = pyrr.matrix44.create_look_at(view.fro.tuple(), view.at.tuple(), view.up.tuple())
         self.prog['u_view'].write(view.astype('f4'))
 
     def add_vertex(self, at, normal=Point(), material=Material()):
@@ -76,31 +123,52 @@ class Scene:
             material.shin,
         ])
 
+    def add_triangle(self, a, b, c, normal=Point(), material=Material()):
+        for i in [a, b, c]:
+            self.add_vertex(i, normal, material)
+
+    def add_rectangle(self, at, normal, up, w, h, material=Material()):
+        normal = pyrr.Vector3(pyrr.vector.normalize(normal))
+        up = pyrr.Vector3(pyrr.vector.normalize(up))
+        tan = normal ^ up
+        bitan = tan ^ normal
+        a = at + h * bitan + w * tan
+        b = at + h * bitan - w * tan
+        c = at - h * bitan + w * tan
+        d = at - h * bitan - w * tan
+        self.add_triangle(a, b, c, normal, material)
+        self.add_triangle(b, c, d, normal, material)
+
+    def add_plane(self, at, normal, material=Material(), size=1e6):
+        up = Point(normal.x + 1, normal.y, normal.z)
+        self.add_rectangle(at, normal, up, size, size, material)
+
     def add_light(self, at, color=Color(w=1)):
         self.lights.append((at, color[0:3]))
 
     def frame(self):
-        va = self.ctx.vertex_array(
-            self.prog,
-            [(
-                self.ctx.buffer(np.array(self.verts, dtype='f4')),
-                '3f 3f 4f 1f 1f 1f',
-                'a_pos',
-                'a_normal',
-                'a_color',
-                'a_diff',
-                'a_spec',
-                'a_shin',
-            )],
-        )
+        if self.verts:
+            va = self.ctx.vertex_array(
+                self.prog,
+                [(
+                    self.ctx.buffer(np.array(self.verts, dtype='f4')),
+                    '3f 3f 4f 1f 1f 1f',
+                    'a_pos',
+                    'a_normal',
+                    'a_color',
+                    'a_diff',
+                    'a_spec',
+                    'a_shin',
+                )],
+            )
         amb = None
         self.acc.clear()
         for light in self.lights:
             self.fb.use()
             self.fb.clear()
-            self.prog['u_light_pos'] = light[0]
+            self.prog['u_light_pos'] = light[0].tuple()
             self.prog['u_light_color'] = light[1]
-            va.render(mode=moderngl.TRIANGLES)
+            if self.verts: va.render(mode=moderngl.TRIANGLES)
             self.acc.add(self.texture)
             if not amb: amb = self.set_ambient_light(Color())
         self.set_ambient_light(amb)
