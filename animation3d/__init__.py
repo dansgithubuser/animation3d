@@ -139,7 +139,7 @@ class Scene:
         self.add_triangle(a, b, c, normal, material)
         self.add_triangle(b, c, d, normal, material)
 
-    def add_plane(self, at, normal, material=Material(), size=1e6):
+    def add_plane(self, at, normal, material=Material(), size=1e3):
         up = Point(normal.x + 1, normal.y, normal.z)
         self.add_rectangle(at, normal, up, size, size, material)
 

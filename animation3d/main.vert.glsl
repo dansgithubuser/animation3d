@@ -18,9 +18,8 @@ out float v_spec;
 out float v_shin;
 
 void main() {
-    const vec4 pos = u_view * vec4(a_pos, 1.0);
-    v_pos = pos.xyz;
-    gl_Position = u_proj * pos;
+    gl_Position = u_proj * u_view * vec4(a_pos, 1.0);
+    v_pos = a_pos.xyz;
     v_normal = a_normal;
     v_color = a_color;
     v_diff = a_diff;
